@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>乗車スタンプ フローモックアップ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:#f0f0f0;padding:24px 16px 48px;}
+h1{text-align:center;font-size:14px;font-weight:700;color:#333;margin-bottom:4px;}
+.subtitle{text-align:center;font-size:10px;color:#888;margin-bottom:6px;}
+
+/* フロー凡例 */
+.flow-legend{display:flex;gap:14px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+.fl-item{display:flex;align-items:center;gap:4px;font-size:9px;color:#555;}
+.fl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* フロー全体 */
+.flow-wrap{display:flex;flex-direction:column;gap:0;}
+.flow-row{display:flex;align-items:flex-start;gap:0;justify-content:center;flex-wrap:wrap;}
+.flow-arrow-h{display:flex;align-items:center;padding-top:110px;color:#bbb;font-size:24px;flex-shrink:0;margin:0 2px;}
+.flow-arrow-v{text-align:center;color:#bbb;font-size:24px;line-height:1;padding:4px 0;width:100%;}
+
+/* Phone */
+.phone{width:260px;background:#fff;border-radius:30px;border:1.5px solid #ccc;
+  box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:8px;flex-shrink:0;}
+.phone-inner{border-radius:23px;overflow:hidden;border:1px solid #eee;
+  background:#fff;min-height:480px;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:6px 14px 3px;
+  font-size:9px;font-weight:700;color:#333;background:#fff;}
+
+/* ページヘッダー */
+.pg-hd{padding:9px 13px 7px;background:#fff;border-bottom:1px solid #eee;}
+.pg-hd-title{font-size:12px;font-weight:700;color:#333;}
+.pg-hd-sub{font-size:9px;color:#888;margin-top:1px;}
+
+/* ステップバー */
+.step-bar{display:flex;align-items:center;padding:6px 13px;background:#f9f9f9;
+  border-bottom:1px solid #eee;gap:0;}
+.sp{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:8px;font-weight:700;flex-shrink:0;}
+.sp.done{background:#4caf50;color:#fff;}
+.sp.now{background:#e87722;color:#fff;}
+.sp.todo{background:#e0e0e0;color:#aaa;}
+.sl{flex:1;height:1.5px;background:#e0e0e0;}
+.sl.done{background:#4caf50;}
+
+/* body */
+.bd{flex:1;padding:10px 13px;background:#fff;display:flex;flex-direction:column;gap:7px;}
+.bd.mint{background:#eaf6f2;}
+
+/* マイページ専用 */
+.user-line{font-size:11px;color:#666;padding:5px 13px 0;background:#eaf6f2;}
+.pt-area{padding:3px 13px 6px;background:#eaf6f2;}
+.pt-num{font-size:26px;font-weight:700;color:#222;line-height:1.1;}
+.pt-link{font-size:10px;color:#e87722;text-decoration:underline;display:block;margin-top:1px;}
+.stamp-area{padding:5px 13px 6px;background:#eaf6f2;}
+.stamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;}
+.stamp{aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.stamp.got{background:#4caf50;}
+.stamp.empty{background:#e0e0e0;}
+.s-bar{width:60%;height:2px;background:rgba(255,255,255,0.5);border-radius:1px;margin-bottom:1px;}
+.s-num{font-size:10px;font-weight:700;color:#fff;line-height:1;}
+.stamp.empty .s-num{color:#bbb;}
+.stamp.empty .s-bar{background:rgba(0,0,0,0.1);}
+.stamp-page{font-size:9px;color:#999;text-align:center;margin-top:2px;}
+.camp-desc{font-size:10px;color:#888;padding:4px 13px 5px;background:#eaf6f2;border-bottom:1px solid #d8ede8;}
+
+/* ボタン */
+.btn-r{background:#c8373a;color:#fff;border:none;border-radius:6px;
+  width:100%;padding:10px;font-size:12px;font-weight:700;font-family:inherit;display:block;}
+.btn-o{background:#fff;color:#555;border:1px solid #ccc;border-radius:6px;
+  width:100%;padding:8px;font-size:11px;font-family:inherit;display:block;margin-top:5px;}
+.btn-g{background:#e0e0e0;color:#bbb;border:none;border-radius:6px;
+  width:100%;padding:8px;font-size:11px;font-family:inherit;display:block;margin-top:5px;}
+.btn-green{background:#4caf50;color:#fff;border:none;border-radius:6px;
+  width:100%;padding:10px;font-size:12px;font-weight:700;font-family:inherit;display:block;}
+
+/* 乗る/降りるカード */
+.ride-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.ride-btn{border-radius:9px;padding:13px 7px;text-align:center;border:2px solid;}
+.ride-btn.active{border-color:#e87722;background:#fff8f0;}
+.ride-btn.disabled{border-color:#e0e0e0;background:#f9f9f9;opacity:0.45;}
+.ride-icon{font-size:22px;margin-bottom:3px;}
+.ride-label{font-size:12px;font-weight:700;}
+.ride-btn.active .ride-label{color:#e87722;}
+.ride-btn.disabled .ride-label{color:#bbb;}
+.ride-hint{font-size:8px;margin-top:2px;}
+.ride-btn.active .ride-hint{color:rgba(232,119,34,0.8);}
+.ride-btn.disabled .ride-hint{color:#bbb;}
+
+/* 交通種別 */
+.transit-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.transit-btn{background:#fff;border:1.5px solid #e0e0e0;border-radius:9px;padding:12px 7px;text-align:center;}
+.transit-btn.sel{border-color:#4caf50;background:#f0fff4;}
+.t-icon{font-size:22px;margin-bottom:3px;}
+.t-label{font-size:11px;font-weight:700;color:#333;}
+.transit-btn.sel .t-label{color:#2e7d32;}
+
+/* 会社リスト */
+.company-list{display:flex;flex-direction:column;gap:5px;}
+.company-item{display:flex;align-items:center;gap:9px;background:#fff;
+  border:1.5px solid #e0e0e0;border-radius:8px;padding:9px 10px;}
+.company-item.sel{border-color:#4caf50;background:#f0fff4;}
+.company-logo{width:30px;height:30px;border-radius:6px;background:#eaf6f2;
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.company-item.sel .company-logo{background:#4caf50;}
+.company-name{font-size:11px;font-weight:700;color:#333;flex:1;}
+.company-type{font-size:8px;color:#888;margin-top:1px;}
+.check-circle{width:18px;height:18px;border-radius:50%;background:#4caf50;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0;}
+
+/* 停留所リスト */
+.stop-list{display:flex;flex-direction:column;gap:5px;}
+.stop-item{display:flex;align-items:center;gap:9px;background:#fff;
+  border:1.5px solid #e0e0e0;border-radius:8px;padding:9px 10px;}
+.stop-item.near{border-color:#4caf50;background:#f0fff4;}
+.stop-icon{width:30px;height:30px;border-radius:50%;background:#eaf6f2;
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.stop-item.near .stop-icon{background:#4caf50;}
+.stop-name{font-size:11px;font-weight:700;color:#333;}
+.stop-dist{font-size:9px;color:#888;margin-top:1px;}
+.near-badge{font-size:8px;font-weight:700;background:#4caf50;color:#fff;
+  padding:1px 5px;border-radius:99px;white-space:nowrap;}
+
+/* 確認カード */
+.confirm-card{border:1.5px solid #4caf50;border-radius:9px;overflow:hidden;}
+.confirm-hd{background:#4caf50;color:#fff;padding:7px 11px;font-size:10px;font-weight:700;}
+.confirm-bd{padding:9px 11px;}
+.confirm-name{font-size:13px;font-weight:700;color:#333;}
+.confirm-meta{font-size:9px;color:#888;margin-top:2px;}
+.confirm-pt{display:inline-block;background:#e87722;color:#fff;
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;margin-top:4px;}
+
+/* 乗車中バー */
+.riding-bar{background:#e87722;color:#fff;padding:7px 13px;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:space-between;}
+.cancel-link{font-size:9px;opacity:0.85;text-decoration:underline;}
+
+/* ルート */
+.route-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;}
+.rdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.rdot.g{background:#4caf50;}
+.rdot.o{background:#e87722;}
+.rdot.x{background:#e0e0e0;border:1.5px dashed #bbb;}
+.rline{width:1.5px;height:13px;background:#e0e0e0;margin-left:4px;}
+.rtxt{font-size:11px;color:#444;}
+.rtxt.done{color:#2e7d32;font-weight:600;}
+.rtxt.now{color:#e87722;font-weight:600;}
+.r-sub{font-size:8px;color:#aaa;margin-top:1px;}
+
+/* 完了 */
+.complete-box{text-align:center;padding:14px 8px;}
+.complete-icon{font-size:44px;margin-bottom:7px;}
+.complete-title{font-size:13px;font-weight:700;color:#333;}
+.complete-sub{font-size:9px;color:#888;margin-top:3px;line-height:1.7;}
+.complete-pt{font-size:22px;font-weight:900;color:#4caf50;margin-top:7px;}
+
+/* リセット警告 */
+.warn-box{background:#fff3e0;border:1px solid #ffc107;border-radius:7px;
+  padding:8px 10px;font-size:9px;color:#7a5200;line-height:1.7;}
+
+/* custom mark */
+.cm{position:relative;border:2px solid #e53935!important;
+  border-radius:6px;background:#fff5f5!important;padding:8px;}
+.cm::before{content:"✏️ カスタム";position:absolute;top:-10px;right:4px;
+  background:#e53935;color:#fff;font-size:8px;font-weight:700;
+  padding:1px 5px;border-radius:3px;white-space:nowrap;z-index:10;}
+
+/* ラベル */
+.screen-wrap{display:flex;flex-direction:column;align-items:center;}
+.step-badge{font-size:9px;font-weight:700;background:#333;color:#fff;
+  padding:2px 8px;border-radius:99px;margin-bottom:5px;}
+.screen-label{font-size:11px;color:#555;margin-top:7px;font-weight:700;text-align:center;}
+.screen-sub{font-size:9px;color:#888;margin-top:2px;text-align:center;max-width:260px;}
+</style>
+</head>
+<body>
+
+<h1>乗車スタンプ フローモックアップ</h1>
+<p class="subtitle">SmartStampCard カスタマイズ型 ／ 種別→会社→現在地→停留所 選択フロー</p>
+
+<!-- フロー凡例 -->
+<div class="flow-legend">
+  <div class="fl-item"><div class="fl-dot" style="background:#4caf50;"></div>標準機能</div>
+  <div class="fl-item"><div class="fl-dot" style="background:#e53935;"></div>カスタム開発</div>
+  <div class="fl-item"><div class="fl-dot" style="background:#e87722;"></div>乗車中状態</div>
+</div>
+
+<div class="flow-wrap">
+<!-- ═══════════ ROW 1 ═══════════ -->
+<div class="flow-row">
+
+<!-- ① マイページ -->
+<div class="screen-wrap">
+  <div class="step-badge">START</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="user-line">ようこそ 山田 さん。</div>
+    <div class="pt-area">
+      <div><span class="pt-num">3</span><span style="font-size:11px;">ポイント</span></div>
+      <a class="pt-link">応募できる賞品があります</a>
+    </div>
+    <div class="stamp-area">
+      <div class="stamp-grid">
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">1</div></div>
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">2</div></div>
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">3</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">4</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">5</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">6</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">7</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">8</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">9</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">10</div></div>
+      </div>
+      <div class="stamp-page">1 / 2</div>
+    </div>
+    <div class="camp-desc">キャンペーン概要が入ります。</div>
+    <div style="height:7px;background:#eaf6f2;"></div>
+    <div class="cm" style="margin:0 13px;">
+      <button class="btn-r" style="margin:0;">🚃 乗車スタンプを押す</button>
+    </div>
+    <div style="padding:0 13px;margin-top:5px;">
+      <button class="btn-o">🧾 タクシーレシートを登録する</button>
+    </div>
+    <div style="height:8px;"></div>
+  </div></div>
+  <div class="screen-label">① マイページ</div>
+  <div class="screen-sub">「乗車スタンプを押す」タップ</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ② 乗る/降りる選択 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 1</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">スタンプ取得</div>
+      <div class="pg-hd-sub">乗る・降りるを選択してください</div>
+    </div>
+    <div class="bd">
+      <div class="cm">
+        <div style="font-size:9px;color:#888;margin-bottom:7px;font-weight:600;">操作を選んでください</div>
+        <div class="ride-grid">
+          <div class="ride-btn active">
+            <div class="ride-icon">🚌</div>
+            <div class="ride-label">乗る</div>
+            <div class="ride-hint">タップして開始</div>
+          </div>
+          <div class="ride-btn disabled">
+            <div class="ride-icon">🏁</div>
+            <div class="ride-label">降りる</div>
+            <div class="ride-hint">乗った後に有効</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:#e87722;font-weight:600;background:#fff8f0;border-radius:5px;padding:6px 8px;">
+        ※「降りる」は乗車スタンプ取得後に解放されます
+      </div>
+    </div>
+  </div></div>
+  <div class="screen-label">② 乗る／降りる選択</div>
+  <div class="screen-sub">「降りる」は乗車後に解放</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ③ 交通種別選択 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 2</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">交通種別を選んでください</div>
+      <div class="pg-hd-sub">乗車する交通機関の種類</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp now">1</div><div class="sl"></div>
+      <div class="sp todo">2</div><div class="sl"></div>
+      <div class="sp todo">3</div><div class="sl"></div>
+      <div class="sp todo">4</div><div class="sl"></div>
+      <div class="sp todo">5</div>
+    </div>
+    <div class="bd">
+      <div class="cm">
+        <div class="transit-grid">
+          <div class="transit-btn sel">
+            <div class="t-icon">🚌</div>
+            <div class="t-label">バス</div>
+          </div>
+          <div class="transit-btn">
+            <div class="t-icon">🚃</div>
+            <div class="t-label">電車</div>
+          </div>
+          <div class="transit-btn">
+            <div class="t-icon">🚋</div>
+            <div class="t-label">路面電車</div>
+          </div>
+          <div class="transit-btn">
+            <div class="t-icon">⛴️</div>
+            <div class="t-label">フェリー</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:auto;"></div>
+      <button class="btn-r">次へ：会社を選ぶ →</button>
+      <button class="btn-o">キャンセル</button>
+    </div>
+  </div></div>
+  <div class="screen-label">③ 交通種別選択</div>
+  <div class="screen-sub">バス・電車・路面電車・フェリー</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ④ 会社（マスタ）選択 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 3</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">バス会社を選んでください</div>
+      <div class="pg-hd-sub">乗車するバス会社</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp now">2</div><div class="sl"></div>
+      <div class="sp todo">3</div><div class="sl"></div>
+      <div class="sp todo">4</div><div class="sl"></div>
+      <div class="sp todo">5</div>
+    </div>
+    <div class="bd">
+      <div class="cm">
+        <div class="company-list">
+          <div class="company-item sel">
+            <div class="company-logo">🚌</div>
+            <div>
+              <div class="company-name">両備バス</div>
+              <div class="company-type">路線バス・岡山市内</div>
+            </div>
+            <div class="check-circle">✓</div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo">🚌</div>
+            <div>
+              <div class="company-name">宇野自動車（宇野バス）</div>
+              <div class="company-type">路線バス・岡山市内</div>
+            </div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo">🚌</div>
+            <div>
+              <div class="company-name">中国バス</div>
+              <div class="company-type">路線バス・岡山市内</div>
+            </div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo">🚌</div>
+            <div>
+              <div class="company-name">備北バス</div>
+              <div class="company-type">路線バス・北部エリア</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:auto;"></div>
+      <button class="btn-r">次へ：路線を選ぶ →</button>
+      <button class="btn-o">← 種別に戻る</button>
+    </div>
+  </div></div>
+  <div class="screen-label">④ 会社（マスタ）選択</div>
+  <div class="screen-sub">管理画面登録の事業者から選択<br>→ 次：路線選択</div>
+</div>
+
+
+<!-- ④-b 路線選択（新規追加） -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 3</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">路線を選んでください</div>
+      <div class="pg-hd-sub">🚌 両備バス ／ 運行路線を選択</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp now">3</div><div class="sl"></div>
+      <div class="sp todo">4</div><div class="sl"></div>
+      <div class="sp todo">5</div>
+    </div>
+    <div class="bd">
+      <div class="cm">
+        <div style="font-size:9px;color:#888;margin-bottom:7px;font-weight:600;">
+          両備バスの路線一覧
+        </div>
+        <div class="company-list">
+          <div class="company-item sel">
+            <div class="company-logo" style="font-size:11px;font-weight:700;color:#fff;">01</div>
+            <div>
+              <div class="company-name">岡山駅～東山線</div>
+              <div class="company-type">岡山駅前 ⇔ 東山・旭川荘</div>
+            </div>
+            <div class="check-circle">✓</div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo" style="background:#f5f5f5;color:#888;font-size:11px;font-weight:700;">03</div>
+            <div>
+              <div class="company-name">岡山駅～西大寺線</div>
+              <div class="company-type">岡山駅前 ⇔ 西大寺</div>
+            </div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo" style="background:#f5f5f5;color:#888;font-size:11px;font-weight:700;">06</div>
+            <div>
+              <div class="company-name">岡山駅～倉敷線</div>
+              <div class="company-type">岡山駅前 ⇔ 倉敷駅</div>
+            </div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo" style="background:#f5f5f5;color:#888;font-size:11px;font-weight:700;">10</div>
+            <div>
+              <div class="company-name">岡山駅～牛窓線</div>
+              <div class="company-type">岡山駅前 ⇔ 牛窓</div>
+            </div>
+          </div>
+          <div class="company-item">
+            <div class="company-logo" style="background:#f5f5f5;color:#888;font-size:11px;font-weight:700;">12</div>
+            <div>
+              <div class="company-name">岡山駅～玉野線</div>
+              <div class="company-type">岡山駅前 ⇔ 玉野</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:auto;"></div>
+      <button class="btn-r">次へ：GPS で停留所を検索 →</button>
+      <button class="btn-o">← 会社に戻る</button>
+    </div>
+  </div></div>
+  <div class="screen-label">④-b 路線選択</div>
+  <div class="screen-sub">会社に紐づく路線マスタから選択<br>路線番号・区間を表示</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+</div><!-- /row1 -->
+
+<div class="flow-arrow-v">↓</div>
+
+<!-- ═══════════ ROW 2 ═══════════ -->
+<div class="flow-row">
+
+<!-- ⑤ GPS取得・停留所検索 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 4</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">現在地から停留所を検索</div>
+      <div class="pg-hd-sub">🚌 両備バス ／ 岡山駅〜東山線 ／ GPS取得中</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp now">4</div><div class="sl"></div>
+      <div class="sp todo">5</div>
+    </div>
+    <div class="bd" style="align-items:center;gap:10px;">
+      <div class="cm" style="width:100%;text-align:center;padding:16px 10px;">
+        <div style="font-size:32px;margin-bottom:7px;">📡</div>
+        <div style="font-size:11px;font-weight:600;color:#555;margin-bottom:3px;">GPS 位置情報を取得中...</div>
+        <div style="font-size:9px;color:#aaa;margin-bottom:10px;">位置情報のアクセスを許可してください</div>
+        <button style="background:#4caf50;color:#fff;border:none;border-radius:5px;
+          padding:8px 20px;font-size:11px;font-weight:700;font-family:inherit;width:100%;">
+          GPS を有効にする</button>
+        <a style="font-size:9px;color:#e87722;display:block;text-align:center;margin-top:5px;">GPS設定方法</a>
+      </div>
+      <div style="font-size:9px;color:#888;text-align:center;line-height:1.7;
+        background:#f9f9f9;border-radius:6px;padding:8px;">
+        現在地から<strong>半径500m以内</strong>の<br>
+        <strong>両備バス ／ 岡山駅〜東山線</strong>の停留所を自動検索します
+      </div>
+    </div>
+  </div></div>
+  <div class="screen-label">⑤ GPS取得・停留所検索</div>
+  <div class="screen-sub">現在地を取得しDBから候補を抽出</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑥ 停留所候補一覧 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 5</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">乗車するバス停を選んでください</div>
+      <div class="pg-hd-sub">📍 現在地500m以内 ／ 両備バス・岡山駅〜東山線 ／ 4件</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp now">5</div>
+    </div>
+    <div class="bd">
+      <div class="cm">
+        <div class="stop-list">
+          <div class="stop-item near">
+            <div class="stop-icon">🚌</div>
+            <div style="flex:1;">
+              <div class="stop-name">岡山駅前（西口）</div>
+              <div class="stop-dist">現在地から 42m</div>
+            </div>
+            <div class="near-badge">最寄り</div>
+          </div>
+          <div class="stop-item">
+            <div class="stop-icon">🚌</div>
+            <div style="flex:1;">
+              <div class="stop-name">岡山駅前（東口）</div>
+              <div class="stop-dist">現在地から 115m</div>
+            </div>
+          </div>
+          <div class="stop-item">
+            <div class="stop-icon">🚌</div>
+            <div style="flex:1;">
+              <div class="stop-name">駅前町</div>
+              <div class="stop-dist">現在地から 230m</div>
+            </div>
+          </div>
+          <div class="stop-item">
+            <div class="stop-icon">🚌</div>
+            <div style="flex:1;">
+              <div class="stop-name">城下</div>
+              <div class="stop-dist">現在地から 490m</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-r" style="margin-top:2px;">この停留所でスタンプを取得する</button>
+      <button class="btn-o">現在地を再取得する</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑥ 停留所候補一覧</div>
+  <div class="screen-sub">距離順・最寄りをハイライト</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑦ 乗車スタンプ確認・取得 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 6</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">スタンプ取得</div>
+      <div class="pg-hd-sub">以下の内容で応募しますか？</div>
+    </div>
+    <div class="bd">
+      <div class="confirm-card">
+        <div class="confirm-hd">🚌 乗車地スタンプ</div>
+        <div class="confirm-bd">
+          <div class="confirm-name">岡山駅前（西口）</div>
+          <div class="confirm-meta">両備バス ／ 岡山駅〜東山線 ／ 現在地から42m</div>
+          <div><span class="confirm-pt">1point付与（ペア成立時）</span></div>
+        </div>
+      </div>
+      <!-- ルート確認 -->
+      <div style="background:#f9f9f9;border-radius:7px;padding:9px 10px;">
+        <div style="font-size:9px;color:#888;font-weight:600;margin-bottom:5px;">乗降の流れ</div>
+        <div class="route-item">
+          <div class="rdot o"></div>
+          <div>
+            <div class="rtxt now">乗車地：岡山駅前（西口）← 今ここ</div>
+            <div class="r-sub">スタンプを取得してください</div>
+          </div>
+        </div>
+        <div class="rline"></div>
+        <div class="route-item">
+          <div class="rdot x"></div>
+          <div>
+            <div class="rtxt" style="color:#bbb;">降車地：降りたら選択</div>
+            <div class="r-sub">乗車後に「降りる」が解放されます</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:auto;"></div>
+      <button class="btn-r">応募する（乗車スタンプ取得）</button>
+      <button class="btn-o">戻る</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑦ 乗車スタンプ確認・取得</div>
+  <div class="screen-sub">取得後「降りる」が自動的に解放</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑧ 乗車中状態（降りる待機） -->
+<div class="screen-wrap">
+  <div class="step-badge">乗車中</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <!-- 乗車中バー -->
+    <div class="riding-bar">
+      <span>🚌 乗車中：両備バス 岡山駅〜東山線</span>
+      <span class="cancel-link">キャンセル</span>
+    </div>
+    <div class="user-line">ようこそ 山田 さん。</div>
+    <div class="pt-area">
+      <div><span class="pt-num">3</span><span style="font-size:11px;">ポイント</span></div>
+      <a class="pt-link">応募できる賞品があります</a>
+    </div>
+    <div class="stamp-area">
+      <div class="stamp-grid">
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">1</div></div>
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">2</div></div>
+        <div class="stamp got"><div class="s-bar"></div><div class="s-num">3</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">4</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">5</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">6</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">7</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">8</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">9</div></div>
+        <div class="stamp empty"><div class="s-bar"></div><div class="s-num">10</div></div>
+      </div>
+      <div class="stamp-page">1 / 2</div>
+    </div>
+    <div class="camp-desc">キャンペーン概要が入ります。</div>
+    <div style="height:7px;background:#eaf6f2;"></div>
+    <div style="padding:0 13px;">
+      <!-- 降りるが解放 -->
+      <div class="cm">
+        <button class="btn-r" style="margin:0;background:#e87722;">🏁 降りる（降車スタンプを押す）</button>
+      </div>
+      <!-- 乗るは無効 -->
+      <button class="btn-g" style="margin-top:6px;">🚌 乗る（乗車中のためロック中）</button>
+    </div>
+    <div style="height:8px;"></div>
+  </div></div>
+  <div class="screen-label">⑧ マイページ（乗車中状態）</div>
+  <div class="screen-sub">「降りる」が解放・「乗る」はロック</div>
+</div>
+
+</div><!-- /row2 -->
+
+<div class="flow-arrow-v">↓</div>
+
+<!-- ═══════════ ROW 3 ═══════════ -->
+<div class="flow-row">
+
+<!-- ⑨ 降車：種別→会社→停留所（サマリ画面） -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 7</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="riding-bar">
+      <span>🚌 乗車中：両備バス 岡山駅〜東山線</span>
+      <span class="cancel-link">キャンセル</span>
+    </div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">降車するバス停を選んでください</div>
+      <div class="pg-hd-sub">🚌 両備バス ／ 乗車地と同じ会社が選択済み</div>
+    </div>
+    <div class="step-bar">
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp done">✓</div><div class="sl done"></div>
+      <div class="sp now">4</div>
+    </div>
+    <div class="bd">
+      <!-- 乗車地の会社が引き継がれる -->
+      <div style="background:#e8f5e9;border-radius:6px;padding:6px 9px;
+        font-size:9px;color:#2e7d32;font-weight:600;">
+        ✅ 会社：両備バス（乗車時の選択を引き継ぎ）
+      </div>
+      <div class="cm">
+        <div class="stop-list">
+          <div class="stop-item near">
+            <div class="stop-icon">🏁</div>
+            <div style="flex:1;">
+              <div class="stop-name">後楽園前</div>
+              <div class="stop-dist">現在地から 38m</div>
+            </div>
+            <div class="near-badge">最寄り</div>
+          </div>
+          <div class="stop-item">
+            <div class="stop-icon">🏁</div>
+            <div style="flex:1;">
+              <div class="stop-name">城下</div>
+              <div class="stop-dist">現在地から 95m</div>
+            </div>
+          </div>
+          <div class="stop-item">
+            <div class="stop-icon">🏁</div>
+            <div style="flex:1;">
+              <div class="stop-name">県庁前</div>
+              <div class="stop-dist">現在地から 200m</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-r">この停留所で降車スタンプを取得する</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑨ 降車停留所選択</div>
+  <div class="screen-sub">会社は乗車時の選択を引き継ぎ<br>GPS現在地から候補を再検索</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑩ 降車スタンプ確認 -->
+<div class="screen-wrap">
+  <div class="step-badge">STEP 8</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="riding-bar">
+      <span>🚌 乗車中：両備バス 岡山駅〜東山線</span>
+      <span class="cancel-link">キャンセル</span>
+    </div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">スタンプ取得</div>
+      <div class="pg-hd-sub">以下の内容で応募しますか？</div>
+    </div>
+    <div class="bd">
+      <div class="confirm-card" style="border-color:#e87722;">
+        <div class="confirm-hd" style="background:#e87722;">🏁 降車地スタンプ</div>
+        <div class="confirm-bd">
+          <div class="confirm-name">後楽園前</div>
+          <div class="confirm-meta">両備バス ／ 現在地から38m</div>
+          <div><span class="confirm-pt">ペア成立 → 1pt付与！</span></div>
+        </div>
+      </div>
+      <!-- ルート確認 -->
+      <div style="background:#f9f9f9;border-radius:7px;padding:9px 10px;">
+        <div style="font-size:9px;color:#888;font-weight:600;margin-bottom:5px;">今回の乗車</div>
+        <div class="route-item">
+          <div class="rdot g"></div>
+          <div>
+            <div class="rtxt done">乗車地：岡山駅前（西口）✅</div>
+            <div class="r-sub">09:41 取得済み</div>
+          </div>
+        </div>
+        <div class="rline" style="background:#4caf50;"></div>
+        <div class="route-item">
+          <div class="rdot o"></div>
+          <div>
+            <div class="rtxt now">降車地：後楽園前 ← 今ここ</div>
+            <div class="r-sub">スタンプを取得してください</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:auto;"></div>
+      <button class="btn-r">応募する（降車スタンプ取得）</button>
+      <button class="btn-o">戻る</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑩ 降車スタンプ確認・取得</div>
+  <div class="screen-sub">ペア成立で1pt付与</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑪ 完了・自動リセット -->
+<div class="screen-wrap">
+  <div class="step-badge">COMPLETE</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">スタンプ取得完了！</div>
+      <div class="pg-hd-sub">乗降ペアが成立しました</div>
+    </div>
+    <div class="bd" style="align-items:center;text-align:center;justify-content:center;">
+      <div class="complete-box">
+        <div class="complete-icon">🎉</div>
+        <div class="complete-title">1ポイント獲得！</div>
+        <div class="complete-pt">4 pt</div>
+        <div class="complete-sub" style="margin-top:4px;">
+          岡山駅前（西口）→ 後楽園前<br>
+          両備バス ／ 乗降ペア成立
+        </div>
+        <div style="margin-top:10px;padding:8px;background:#f0fff4;border-radius:6px;
+          font-size:9px;color:#2e7d32;line-height:1.7;">
+          ✅ 乗車中状態をリセットしました<br>
+          続けて乗車する場合は「乗る」から
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 13px 10px;">
+      <button class="btn-green">マイページに戻る</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑪ 完了・自動リセット</div>
+  <div class="screen-sub">降車完了後に乗車状態を自動リセット<br>次の乗車は「乗る」から再開始</div>
+</div>
+
+<div class="flow-arrow-h">›</div>
+
+<!-- ⑫ キャンセル時：リセット警告 -->
+<div class="screen-wrap">
+  <div class="step-badge">CANCEL</div>
+  <div class="phone"><div class="phone-inner">
+    <div class="sb"><span>9:41</span><span>▲◀🔋</span></div>
+    <div class="pg-hd">
+      <div class="pg-hd-title">乗車をキャンセルしますか？</div>
+      <div class="pg-hd-sub">乗車中の状態がリセットされます</div>
+    </div>
+    <div class="bd" style="justify-content:center;gap:10px;">
+      <div class="warn-box">
+        ⚠️ <strong>「キャンセル」を押すと乗車スタンプが無効になります。</strong><br><br>
+        ・乗車地（岡山駅前 西口）のスタンプは取り消されます<br>
+        ・ポイントは付与されません<br>
+        ・次回は「乗る」から再度選択してください
+      </div>
+      <button class="btn-r" style="background:#e53935;">
+        キャンセルする（スタンプを無効にする）
+      </button>
+      <button class="btn-o">戻る（乗車を続ける）</button>
+    </div>
+  </div></div>
+  <div class="screen-label">⑫ キャンセル確認</div>
+  <div class="screen-sub">手動キャンセル時の警告<br>乗車状態をリセットして最初から</div>
+</div>
+
+</div><!-- /row3 -->
+</div><!-- /flow-wrap -->
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>案件サマリー｜公共交通利用促進キャンペーン</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:#f5f5f5;color:#333;}
+
+/* ヘッダー */
+#hd{
+  background:#fff;border-bottom:3px solid #e87722;
+  padding:18px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+#hd h1{font-size:15px;font-weight:700;color:#333;}
+#hd p{font-size:10px;color:#888;margin-top:3px;}
+.back-btn{
+  background:#e87722;color:#fff;border:none;border-radius:6px;
+  padding:8px 16px;font-size:11px;font-weight:700;font-family:inherit;
+  text-decoration:none;display:inline-block;white-space:nowrap;
+}
+.back-btn:hover{background:#d4690e;}
+
+/* コンテンツ */
+#content{max-width:900px;margin:32px auto;padding:0 24px 64px;}
+
+/* セクション */
+.section{
+  background:#fff;border-radius:10px;
+  padding:28px 32px;margin-bottom:24px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.section-title{
+  font-size:15px;font-weight:700;color:#333;
+  border-left:4px solid #e87722;padding-left:12px;
+  margin-bottom:18px;
+}
+.section-title span{
+  font-size:11px;font-weight:400;color:#888;margin-left:10px;
+}
+
+/* テキスト */
+h3{font-size:13px;font-weight:700;color:#555;margin:16px 0 8px;}
+p{line-height:1.8;color:#444;margin-bottom:10px;}
+blockquote{
+  background:#f9f9f9;border-left:3px solid #e87722;
+  padding:10px 14px;border-radius:0 6px 6px 0;
+  font-size:12px;color:#555;line-height:1.8;margin:8px 0;
+}
+
+/* テーブル */
+table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+th{background:#e87722;color:#fff;padding:9px 12px;text-align:left;font-weight:700;}
+td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;line-height:1.6;}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even){background:#fafafa;}
+
+/* バッジ */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.badge-cust{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.badge-std {background:#dcfce7;color:#166534;border:1px solid #86efac;}
+.badge-reci{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+.badge-ops {background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.badge-big {background:#fee2e2;color:#991b1b;font-weight:900;}
+.badge-mid {background:#fef3c7;color:#92400e;}
+.badge-sm  {background:#dcfce7;color:#166534;}
+.badge-cfg {background:#f0f0f0;color:#666;}
+
+/* プロダクト構成ブロック */
+.product-block{
+  background:#f9fffe;border:1.5px solid #4caf50;border-radius:8px;
+  padding:14px 16px;margin:8px 0;
+}
+.product-name{font-size:13px;font-weight:700;color:#2e7d32;margin-bottom:6px;}
+.product-item{font-size:12px;color:#555;padding:3px 0;padding-left:14px;position:relative;line-height:1.6;}
+.product-item::before{content:"└";position:absolute;left:0;color:#4caf50;}
+
+.product-block.reci{background:#f0f4ff;border-color:#1d4ed8;}
+.product-block.reci .product-name{color:#1e40af;}
+.product-block.reci .product-item::before{color:#1d4ed8;}
+
+.link-block{
+  background:#fff8f0;border:1.5px solid #e87722;border-radius:8px;
+  padding:12px 16px;margin:8px 0;font-size:12px;color:#7a4200;line-height:1.8;
+}
+
+/* プラン比較 */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+.plan-card{border-radius:8px;padding:14px 16px;border:1.5px solid #e0e0e0;background:#fff;}
+.plan-card.recommended{border-color:#e87722;background:#fff8f0;}
+.plan-name{font-size:12px;font-weight:700;color:#333;margin-bottom:6px;}
+.plan-card.recommended .plan-name{color:#e87722;}
+.plan-cost{font-size:11px;color:#888;margin-top:4px;}
+.plan-rec{display:inline-block;background:#e87722;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;margin-bottom:4px;}
+
+/* 確認事項 */
+.check-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:12px;
+}
+.check-num{
+  width:20px;height:20px;border-radius:50%;background:#e87722;color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.check-text{color:#444;line-height:1.6;flex:1;}
+.check-tag{font-size:9px;font-weight:700;color:#e53935;margin-left:4px;}
+
+/* 成果物リンク */
+.file-link{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border:1.5px solid #e0e0e0;border-radius:8px;
+  margin-bottom:8px;text-decoration:none;color:#333;background:#fff;
+  transition:border-color .2s,background .2s;
+}
+.file-link:hover{border-color:#e87722;background:#fff8f0;}
+.file-icon{font-size:20px;flex-shrink:0;}
+.file-name{font-size:12px;font-weight:700;color:#333;}
+.file-desc{font-size:10px;color:#888;margin-top:1px;}
+.file-arrow{margin-left:auto;color:#e87722;font-size:14px;}
+
+/* フッター注記 */
+.note{font-size:10px;color:#aaa;margin-top:8px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div id="hd">
+  <div>
+    <h1>案件サマリー｜公共交通利用促進キャンペーン</h1>
+    <p>ビザビ × WWS ／ コンペ提案段階（2025年）</p>
+  </div>
+  <a href="mockup_v5_transit_campaign.html" class="back-btn">← モックアップに戻る</a>
+</div>
+
+<div id="content">
+
+<!-- 1. 案件の背景 -->
+<div class="section">
+  <div class="section-title">1. 案件の背景</div>
+
+  <h3>代理店（ビザビ）への相談内容</h3>
+  <p>行政（地方自治体）が主体となる<strong>公共交通利用促進プロモーション</strong>の企画において、GPSスタンプラリー・レシートキャンペーンの仕組みを活用したシステム構築の相談が代理店経由でビザビに持ち込まれた。</p>
+
+  <h3>クライアントが解決したい課題</h3>
+  <table>
+    <tr><th>課題</th><th>内容</th></tr>
+    <tr><td><strong>交通事業者の負担ゼロ</strong></td><td>車内へのQRコード設置・シール掲出は一切不可</td></tr>
+    <tr><td><strong>不正参加の防止</strong></td><td>車での移動による不正チェックイン排除</td></tr>
+    <tr><td><strong>アプリ不要</strong></td><td>専用アプリDL不要・LINEログインのブラウザ参加</td></tr>
+    <tr><td><strong>多交通手段対応</strong></td><td>バス・電車・路面電車・フェリー・タクシー全対応</td></tr>
+  </table>
+
+  <h3>対象エリア・交通機関</h3>
+  <p>固定路線：バス・電車・路面電車・フェリー（GPS判定）<br>
+  自由路線：タクシー（GPSスポット固定設置不可 → レシートOCR判定）</p>
+</div>
+
+<!-- 2. クライアントの要件 -->
+<div class="section">
+  <div class="section-title">2. クライアントの要件</div>
+
+  <h3>判定ロジック① ｜ 固定路線（GPS）</h3>
+  <blockquote>GTFSオープンデータの緯度経度情報をシステムに一括登録し、「乗車地（出発）」と「降車地（到着）」の2箇所でのGPSチェックインをもって1乗車と判定。インターバル制限等で車移動での不正を防ぎたい。</blockquote>
+
+  <h3>判定ロジック② ｜ 自由路線（タクシー）</h3>
+  <blockquote>GPSスポットの設定ができないため、降車時の「レシート画像アップロード（OCR解析・重複チェック）」をもって1乗車と判定。</blockquote>
+
+  <h3>その他要件</h3>
+  <table>
+    <tr><td>✅</td><td>ポイント蓄積→賞品応募（または即時抽選）まで一気通貫</td></tr>
+    <tr><td>✅</td><td>個人情報のセキュアな取得</td></tr>
+    <tr><td>✅</td><td>類似要件のデモ画面提示が求められている</td></tr>
+    <tr><td>✅</td><td>GTFSデータの一括取り込み可否を確認したい</td></tr>
+    <tr><td>⚡</td><td>コンペ参加案件のため<strong>競合他社との差別化</strong>が必要</td></tr>
+  </table>
+</div>
+
+<!-- 3. 提案方針 -->
+<div class="section">
+  <div class="section-title">3. 提案方針</div>
+
+  <h3>基本スタンス</h3>
+  <blockquote>「要件を100%満たせなくても、<strong>目的（公共交通利用促進）を達成できる提案</strong>をする」</blockquote>
+
+  <h3>プロダクト選定の結論</h3>
+  <div class="product-block">
+    <div class="product-name">SmartStampCard（スタンダード）</div>
+    <div class="product-item">GPS乗降2点チェックイン → 固定路線の乗車判定</div>
+    <div class="product-item">マイレージ機能（OP） → ポイント累積・賞品応募</div>
+    <div class="product-item">LINEログイン（OP） → ブラウザ参加・認証基盤</div>
+  </div>
+  <div class="product-block reci">
+    <div class="product-name">SmartRecieco（WEB版 マイレージ＋LINEログインOP）</div>
+    <div class="product-item">OCR自動審査 → タクシー領収書の乗車判定</div>
+    <div class="product-item">事務局日次審査 → 重複・不正チェック</div>
+  </div>
+  <div class="link-block">
+    🔗 <strong>連携</strong>：Receico承認 → Cardポイント加算（カスタム開発・B-02）
+  </div>
+
+  <h3>提案の3段階構成</h3>
+  <div class="plan-grid">
+    <div class="plan-card">
+      <div class="plan-name">標準プラン</div>
+      <p style="font-size:11px;color:#555;line-height:1.6;">既存機能のみ・手動スポット登録・最短10日納期</p>
+      <div class="plan-cost">費用感：低</div>
+    </div>
+    <div class="plan-card recommended">
+      <div class="plan-rec">コンペ推奨</div>
+      <div class="plan-name">推奨プラン（カスタマイズ型）</div>
+      <p style="font-size:11px;color:#555;line-height:1.6;">GPS乗降ペア判定＋Receico連携＋SSO</p>
+      <div class="plan-cost">費用感：中〜高</div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">MVP（最小構成）</div>
+      <p style="font-size:11px;color:#555;line-height:1.6;">StampCardのみ・タクシーは降車GPSで代替</p>
+      <div class="plan-cost">費用感：低・最速</div>
+    </div>
+  </div>
+
+  <h3>コンペ戦略</h3>
+  <p>行政案件は「<strong>スケジュール確実性</strong>」と「<strong>費用の透明性</strong>」が刺さる。フェーズ提案で予算・スケジュール感に合わせる。</p>
+  <table>
+    <tr><th>フェーズ</th><th>内容</th><th>狙い</th></tr>
+    <tr><td>フェーズ1</td><td>MVP（早期稼働）</td><td>実績づくり・競合排除</td></tr>
+    <tr><td>フェーズ2</td><td>GTFS連携・完全版</td><td>継続受注・拡張</td></tr>
+  </table>
+</div>
+
+<!-- 4. 技術的な合意事項 -->
+<div class="section">
+  <div class="section-title">4. 技術的な合意事項</div>
+
+  <h3>乗降2点チェックインの仕組み</h3>
+  <table>
+    <tr><th>手順</th><th>内容</th></tr>
+    <tr><td>①</td><td>管理画面に各駅・停留所を事前登録（GTFS等から取り込み）</td></tr>
+    <tr><td>②</td><td>ユーザーが「乗車」→「降車」の順でGPSスタンプを2回押す</td></tr>
+    <tr><td>③</td><td>乗車地＋降車地のペア成立で1ポイント付与</td></tr>
+    <tr><td>⚠️</td><td>どちらか片方のみでは付与しない（B-01 カスタム開発）</td></tr>
+  </table>
+
+  <h3>タクシーレシートの運用フロー</h3>
+  <table>
+    <tr><th>ステップ</th><th>内容</th></tr>
+    <tr><td>ユーザー</td><td>領収書を撮影・アップロード（写真を選択ボタン）</td></tr>
+    <tr><td>OCR自動</td><td>タクシー会社名・日時をタグ条件で自動判定</td></tr>
+    <tr><td>⚠️ 重要</td><td><strong>OCR結果はユーザー画面に表示しない</strong>（管理側のみ）</td></tr>
+    <tr><td>事務局</td><td>1日1回目視確認（最大100件/日）→ 承認でCardにポイント反映</td></tr>
+    <tr><td>ユーザー表示</td><td>「2〜3営業日以内に付与」と表示</td></tr>
+  </table>
+
+  <h3>ポイント統合の設計</h3>
+  <table>
+    <tr><td>基盤</td><td>StampCardをポイント管理の基盤とする</td></tr>
+    <tr><td>SSO</td><td>ReceicoはLINEトークン引き継ぎ（SSO）でCardからシームレス遷移</td></tr>
+    <tr><td>連携</td><td>タクシー承認ポイントはReceico→CardへのAPI連携（Webhook方式）で反映</td></tr>
+    <tr><td>表示</td><td>「GPS乗車分」「タクシー承認済」「審査中（予定）」を内訳表示</td></tr>
+  </table>
+</div>
+
+<!-- 5. カスタム開発が必要な箇所 -->
+<div class="section">
+  <div class="section-title">5. カスタム開発が必要な箇所 <span>SE算定対象</span></div>
+
+  <table>
+    <tr>
+      <th style="width:8%;">ID</th>
+      <th style="width:10%;">区分</th>
+      <th style="width:22%;">機能</th>
+      <th>概要</th>
+      <th style="width:10%;text-align:center;">難易度</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-01</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>マイページ：乗車種別ボタン追加＋乗車中UI</td>
+      <td>乗車/タクシー2ボタン分岐・乗車中バー・降りるボタン解放</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-02</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>乗車地検索フロー（BoardingSearchFlow）</td>
+      <td>種別→会社→路線→GPS→停留所選択の全12画面</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">B-01</span></td>
+      <td><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>会社マスタ・路線マスタ・停留所DB・ペア判定・セッション管理</td>
+      <td>TransitCompany / TransitRoute / Stop / StampSession</td>
+      <td style="text-align:center;"><span class="badge badge-big">大</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">B-02</span></td>
+      <td><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>Receico→Cardポイント連携</td>
+      <td>承認Webhook → Card 1pt付与。Webhook未対応時は日次バッチ</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-03<br>B-03</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span><br><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>Card→Receico SSO連携</td>
+      <td>LINEトークン引き継ぎ。チャネル共通→トークン渡し、別→ワンタイム方式</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-04</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>審査ステータス表示</td>
+      <td>「審査中（オレンジ）」「承認済（グリーン）」バッジをマイページ履歴に表示</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-05</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>応募モーダル：ポイント内訳表示</td>
+      <td>GPS分・タクシー承認済・審査中の内訳を応募モーダルに表示</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-ops">B-04</span></td>
+      <td><span style="background:#d1fae5;color:#065f46;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">設定作業</span></td>
+      <td>OCRタグ審査条件設定</td>
+      <td>Receico管理画面でタクシー会社リスト・期間・重複チェックを設定。コーディング不要</td>
+      <td style="text-align:center;"><span class="badge badge-cfg">設定のみ</span></td>
+    </tr>
+  </table>
+
+  <h3 style="margin-top:20px;">WWS社内確認が必要な事項（見積前）</h3>
+  <div class="check-item"><div class="check-num">1</div><div class="check-text">Cardのスポットにペア属性・セッション管理が標準対応しているか <span class="check-tag">B-01の実装方式に影響</span></div></div>
+  <div class="check-item"><div class="check-num">2</div><div class="check-text">ReceicoにWebhookが存在するか <span class="check-tag">B-02の実装方式の分岐点</span></div></div>
+  <div class="check-item"><div class="check-num">3</div><div class="check-text">両プロダクトのLINEチャネルが共通か <span class="check-tag">B-03の実装方式の分岐点</span></div></div>
+  <div class="check-item"><div class="check-num">4</div><div class="check-text">CardマイページのHTMLカスタマイズ可能範囲 <span class="check-tag">F-04/F-05に影響</span></div></div>
+  <div class="check-item"><div class="check-num">5</div><div class="check-text">停留所データのGTFSインポートはCard標準で対応しているか <span class="check-tag">B-01に影響</span></div></div>
+  <div class="check-item"><div class="check-num">6</div><div class="check-text">セッション管理（乗車中状態の保持）はCard標準で対応しているか <span class="check-tag">B-01に影響</span></div></div>
+</div>
+
+<!-- 6. 成果物一覧 -->
+<div class="section">
+  <div class="section-title">6. 成果物一覧</div>
+
+  <a href="mockup_v5_transit_campaign.html" class="file-link">
+    <div class="file-icon">📱</div>
+    <div>
+      <div class="file-name">mockup_v5_transit_campaign.html</div>
+      <div class="file-desc">9画面モックアップ＋ユーザーフロー図＋工数算定テーブル（三点セット）</div>
+    </div>
+    <div class="file-arrow">→</div>
+  </a>
+
+  <a href="custom_requirements_for_SE.md" class="file-link">
+    <div class="file-icon">📋</div>
+    <div>
+      <div class="file-name">custom_requirements_for_SE.md</div>
+      <div class="file-desc">SE向けカスタム機能要件定義書（F-01〜B-04 詳細仕様）</div>
+    </div>
+    <div class="file-arrow">→</div>
+  </a>
+
+  <a href="mockup_stamp_flow.html" class="file-link">
+    <div class="file-icon">🗺️</div>
+    <div>
+      <div class="file-name">mockup_stamp_flow.html</div>
+      <div class="file-desc">乗車地検索フロー（BoardingSearchFlow）専用モックアップ 全13画面</div>
+    </div>
+    <div class="file-arrow">→</div>
+  </a>
+
+  <a href="wws-proposal.skill" class="file-link">
+    <div class="file-icon">🛠️</div>
+    <div>
+      <div class="file-name">wws-proposal.skill</div>
+      <div class="file-desc">提案作業手順スキルファイル（WWSプロダクト全般・業種不問）</div>
+    </div>
+    <div class="file-arrow">→</div>
+  </a>
+
+  <p class="note">※ 本資料はコンペ提案段階のものです。WWS確認後に変更が生じる場合があります。</p>
+</div>
+
+</div><!-- /content -->
+</body>
+</html>
