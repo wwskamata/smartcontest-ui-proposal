@@ -178,6 +178,56 @@ body{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;b
 </head>
 <body>
 
+<!-- ===== AUTH GATE ===== -->
+<div id="auth-gate" style="display:none;position:fixed;inset:0;background:#1a237e;z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:12px;padding:40px 48px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,.3);text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:#1a237e;letter-spacing:.05em;margin-bottom:4px;">WWS Corporation</div>
+    <div style="font-size:11px;color:#666;margin-bottom:24px;">SmartContest 提案資料</div>
+    <div id="auth-err" style="display:none;background:#ffebee;color:#c62828;font-size:11px;padding:6px 10px;border-radius:4px;margin-bottom:12px;">ユーザー名またはパスワードが違います</div>
+    <input id="auth-user" type="text" placeholder="ユーザー名" autocomplete="username"
+      style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;margin-bottom:10px;outline:none;">
+    <input id="auth-pass" type="password" placeholder="パスワード" autocomplete="current-password"
+      style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;margin-bottom:16px;outline:none;">
+    <button id="auth-btn" onclick="checkAuth()"
+      style="width:100%;padding:10px;background:#1a237e;color:white;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">
+      ログイン
+    </button>
+  </div>
+</div>
+<div id="main-content" style="display:none;">
+
+<script>
+(function(){
+  // セッション中はスキップ
+  if(sessionStorage.getItem('auth_ok')==='1'){
+    document.getElementById('auth-gate').style.display='none';
+    document.getElementById('main-content').style.display='block';
+    return;
+  }
+  document.getElementById('auth-gate').style.display='flex';
+  // Enterキー対応
+  ['auth-user','auth-pass'].forEach(function(id){
+    document.getElementById(id).addEventListener('keydown',function(e){
+      if(e.key==='Enter') checkAuth();
+    });
+  });
+})();
+
+function checkAuth(){
+  var u=document.getElementById('auth-user').value.trim();
+  var p=document.getElementById('auth-pass').value;
+  if(u==='contest' && p==='test'){
+    sessionStorage.setItem('auth_ok','1');
+    document.getElementById('auth-gate').style.display='none';
+    document.getElementById('main-content').style.display='block';
+  } else {
+    document.getElementById('auth-err').style.display='block';
+    document.getElementById('auth-pass').value='';
+    document.getElementById('auth-pass').focus();
+  }
+}
+</script>
+
 <!-- HEADER -->
 <div class="hd">
   <h1>SmartContest UI・マニュアル改善提案（8件）</h1>
@@ -1533,5 +1583,6 @@ body{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;b
   SmartContest UI・マニュアル改善提案（8件）＋社内確認事項（2件） ｜ WWS Corporation ｜ 2026年5月
 </div>
 
+</div><!-- /main-content -->
 </body>
 </html>
