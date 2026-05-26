@@ -1,0 +1,7 @@
+node_modules/
+generated/
+*.pptx
+.claude/settings.local.json
+extract_pdf*.py
+__pycache__/
+*.pyc

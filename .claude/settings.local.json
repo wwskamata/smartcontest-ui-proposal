@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell([System.Environment]::SetEnvironmentVariable\\(\"CLAUDE_CODE_GIT_BASH_PATH\", \"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\", \"User\"\\); [System.Environment]::GetEnvironmentVariable\\(\"CLAUDE_CODE_GIT_BASH_PATH\", \"User\"\\))"
-    ]
-  }
-}

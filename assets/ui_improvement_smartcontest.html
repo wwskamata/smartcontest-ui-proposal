@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartContest UI改善提案 ｜ コンテスト作成フロー</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#eaecf0;color:#333;font-size:13px;}
+
+/* ── PROPOSAL HEADER ── */
+.prop-header{background:#1a237e;color:white;padding:20px 36px 16px;}
+.prop-header h1{font-size:20px;font-weight:700;letter-spacing:0.3px;}
+.prop-header p{font-size:12px;opacity:0.75;margin-top:4px;}
+.prop-meta{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.prop-tag{background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:12px;font-size:11px;}
+
+/* ── SECTION WRAP ── */
+.sec-wrap{padding:24px 36px;}
+.sec-heading{font-size:15px;font-weight:700;color:#1a237e;padding-bottom:8px;border-bottom:2px solid #1a237e;margin-bottom:6px;}
+.sec-sub{font-size:11px;color:#666;margin-bottom:18px;}
+
+/* ── COMPARISON TABLE ── */
+.comp-tbl{width:100%;border-collapse:collapse;table-layout:fixed;}
+.comp-tbl>thead>tr>th{padding:10px 14px;font-size:13px;font-weight:700;text-align:center;}
+.th-before{background:#b71c1c;color:white;border-radius:6px 0 0 0;}
+.th-after{background:#1b5e20;color:white;border-radius:0 6px 0 0;}
+.comp-tbl>tbody>tr>td{vertical-align:top;background:white;border:1px solid #ddd;}
+.td-before{border-right:3px solid #888;}
+.td-after{}
+
+/* ── MOCK ADMIN SHELL ── */
+.admin-wrap{display:flex;min-height:480px;}
+.admin-sb{width:188px;background:#263238;flex-shrink:0;}
+.sb-logo{padding:12px 14px;background:#1a237e;color:white;font-size:11px;font-weight:700;letter-spacing:0.3px;}
+.sb-logo small{display:block;font-size:9px;font-weight:400;opacity:0.7;margin-top:2px;}
+.sb-section{padding:10px 14px 3px;font-size:9px;color:#546e7a;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
+.sb-item{display:flex;align-items:center;padding:7px 14px;color:#b0bec5;font-size:10.5px;border-left:3px solid transparent;cursor:pointer;gap:6px;}
+.sb-item:hover,.sb-item.active{color:white;background:rgba(255,255,255,0.07);border-left-color:#42a5f5;}
+.sb-item.active{color:#90caf9;}
+.sb-badge{margin-left:auto;width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.badge-done{background:#43a047;}
+.badge-todo{background:#546e7a;opacity:0.5;}
+.badge-warn{background:#fb8c00;}
+.admin-main{flex:1;background:#f5f6f8;padding:18px;overflow:auto;}
+
+/* ── PAGE CONTENT COMMON ── */
+.page-title{font-size:14px;font-weight:700;color:#1a237e;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.page-title span{font-size:11px;font-weight:400;color:#888;}
+
+/* ── BEFORE: Setup flow list ── */
+.flow-card{background:white;border:1px solid #e0e0e0;border-radius:6px;padding:14px;}
+.flow-card h4{font-size:11px;color:#888;margin-bottom:10px;}
+.flow-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0;}
+.flow-row:last-child{border-bottom:none;}
+.flow-num{width:22px;height:22px;border-radius:50%;background:#90a4ae;color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.flow-info h5{font-size:11px;font-weight:700;color:#333;margin-bottom:2px;}
+.flow-info p{font-size:10px;color:#888;line-height:1.4;}
+
+/* ── AFTER: Wizard progress ── */
+.wizard-bar{background:white;border:1px solid #e0e0e0;border-radius:6px;padding:14px 18px;margin-bottom:12px;}
+.wizard-bar-title{font-size:11px;font-weight:700;color:#333;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.wizard-bar-title .progress-text{font-size:10px;color:#1565c0;font-weight:600;}
+.steps-rail{display:table;width:100%;table-layout:fixed;}
+.step-cell{display:table-cell;text-align:center;position:relative;padding-bottom:2px;}
+.step-cell::after{content:'';position:absolute;top:11px;left:calc(50% + 12px);right:calc(50% - 50%);width:calc(100% - 24px);height:2px;background:#e0e0e0;}
+.step-cell:last-child::after{display:none;}
+.step-cell.s-done::after{background:#43a047;}
+.step-cell.s-active::after{background:linear-gradient(to right,#43a047 50%,#e0e0e0 50%);}
+.step-circle{width:22px;height:22px;border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;position:relative;z-index:1;}
+.s-done .step-circle{background:#43a047;color:white;}
+.s-active .step-circle{background:#1565c0;color:white;box-shadow:0 0 0 3px rgba(21,101,192,0.2);}
+.s-todo .step-circle{background:#e0e0e0;color:#9e9e9e;}
+.step-label{font-size:9px;line-height:1.3;color:#666;}
+.s-done .step-label{color:#2e7d32;font-weight:600;}
+.s-active .step-label{color:#1565c0;font-weight:700;}
+
+.wizard-step-card{background:white;border:1px solid #e0e0e0;border-left:4px solid #1565c0;border-radius:0 6px 6px 0;padding:14px 16px;margin-bottom:10px;}
+.wiz-card-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.wiz-step-num{width:24px;height:24px;border-radius:50%;background:#1565c0;color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wiz-card-header h4{font-size:12px;font-weight:700;color:#1565c0;}
+.wiz-card-header .req-tag{font-size:9px;padding:2px 7px;border-radius:10px;background:#fce4ec;color:#c62828;font-weight:600;}
+.wiz-card-header .opt-tag{font-size:9px;padding:2px 7px;border-radius:10px;background:#e8f5e9;color:#2e7d32;font-weight:600;}
+.wiz-card-body{font-size:10px;color:#666;margin-bottom:10px;line-height:1.5;}
+.wiz-sub-items{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.wiz-sub{font-size:9px;padding:2px 8px;border-radius:10px;background:#e3f2fd;color:#1565c0;}
+.wiz-btn{display:inline-block;padding:6px 14px;background:#1565c0;color:white;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;border:none;}
+.wiz-btn.done-btn{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+.wiz-card.done-card{border-left-color:#43a047;opacity:0.85;}
+.done-card .wiz-card-header h4{color:#2e7d32;}
+.done-check{margin-left:auto;font-size:14px;color:#43a047;}
+
+.wiz-card-group{background:white;border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;}
+.wiz-card-group-header{background:#f5f5f5;padding:8px 14px;font-size:11px;font-weight:700;color:#333;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e0e0e0;}
+.wiz-card-group-item{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid #f0f0f0;gap:10px;}
+.wiz-card-group-item:last-child{border-bottom:none;}
+.wcgi-icon-done{width:18px;height:18px;border-radius:50%;background:#e8f5e9;color:#2e7d32;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wcgi-icon-todo{width:18px;height:18px;border-radius:50%;background:#eeeeee;color:#9e9e9e;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wcgi-icon-current{width:18px;height:18px;border-radius:50%;background:#1565c0;color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wcgi-text h5{font-size:11px;font-weight:700;color:#333;margin-bottom:1px;}
+.wcgi-text p{font-size:9px;color:#888;}
+.wcgi-action{margin-left:auto;flex-shrink:0;}
+.btn-go{padding:4px 10px;background:#1565c0;color:white;border-radius:3px;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.btn-edit{padding:4px 10px;background:#e3f2fd;color:#1565c0;border-radius:3px;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;border:1px solid #90caf9;}
+.wcgi-tag-req{font-size:8px;padding:1px 5px;border-radius:6px;background:#fce4ec;color:#c62828;margin-left:4px;}
+.wcgi-tag-opt{font-size:8px;padding:1px 5px;border-radius:6px;background:#f3e5f5;color:#6a1b9a;margin-left:4px;}
+.progress-bar-wrap{margin-top:8px;background:#e0e0e0;border-radius:4px;height:6px;overflow:hidden;}
+.progress-bar-fill{height:6px;background:linear-gradient(to right,#43a047,#66bb6a);border-radius:4px;}
+
+
+/* ── SECTION 2: FORM COMPARISON ── */
+/* BEFORE: Long form */
+.lf-wrap{padding:14px 16px;}
+.lf-wrap h4{font-size:11px;font-weight:700;color:#333;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid #e0e0e0;}
+.lf-field{margin-bottom:11px;}
+.lf-field label{display:block;font-size:10px;color:#555;margin-bottom:3px;}
+.lf-field label .req{color:#c62828;font-size:9px;margin-left:3px;}
+.lf-field input,.lf-field textarea,.lf-field select{width:100%;padding:5px 7px;border:1px solid #ccc;border-radius:3px;font-size:10px;color:#555;background:white;font-family:inherit;}
+.lf-field textarea{height:40px;resize:none;}
+.lf-divider{border:none;border-top:1px solid #f0f0f0;margin:12px 0;}
+.lf-field .hint{font-size:9px;color:#aaa;margin-top:2px;}
+.lf-checkbox-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.lf-checkbox-row input{width:auto;padding:0;}
+.lf-checkbox-row span{font-size:10px;color:#555;}
+.lf-radio-row{display:flex;gap:14px;}
+.lf-radio-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#555;}
+.lf-step-note{font-size:9px;color:#90a4ae;margin-bottom:8px;}
+
+/* AFTER: Sectioned form */
+.sf-header{background:#1565c0;padding:12px 16px;color:white;}
+.sf-header h4{font-size:12px;font-weight:700;}
+.sf-header .sf-progress{font-size:10px;opacity:0.85;margin-top:2px;}
+.sf-tab-bar{background:#e3f2fd;display:flex;border-bottom:2px solid #1565c0;}
+.sf-tab{padding:7px 12px;font-size:10px;font-weight:600;color:#1565c0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:4px;}
+.sf-tab.active{background:white;border-bottom-color:#1565c0;color:#0d47a1;}
+.sf-tab .tab-check{font-size:11px;color:#43a047;}
+.sf-section{border-bottom:1px solid #e8e8e8;}
+.sf-sec-head{background:#f8f9fa;padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.sf-sec-head h5{font-size:11px;font-weight:700;color:#333;}
+.sf-sec-tag-req{font-size:9px;padding:1px 7px;border-radius:8px;background:#fce4ec;color:#c62828;font-weight:600;}
+.sf-sec-tag-opt{font-size:9px;padding:1px 7px;border-radius:8px;background:#f3e5f5;color:#7b1fa2;font-weight:600;}
+.sf-sec-count{font-size:9px;color:#999;margin-left:auto;}
+.sf-sec-toggle{font-size:10px;color:#999;margin-left:6px;}
+.sf-sec-body{padding:12px 14px;}
+.sf-field{margin-bottom:10px;}
+.sf-field label{display:block;font-size:10px;color:#555;margin-bottom:3px;font-weight:600;}
+.sf-field label .req{color:#c62828;font-size:9px;margin-left:2px;}
+.sf-field input,.sf-field textarea,.sf-field select{width:100%;padding:5px 7px;border:1px solid #ccc;border-radius:3px;font-size:10px;color:#555;background:white;font-family:inherit;}
+.sf-field textarea{height:36px;resize:none;}
+.sf-field .sf-hint{font-size:9px;color:#bbb;margin-top:2px;}
+.sf-field-row{display:flex;gap:8px;}
+.sf-field-row .sf-field{flex:1;}
+.sf-checkbox-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.sf-checkbox-row span{font-size:10px;color:#555;}
+.sf-submit-bar{background:#e8f5e9;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.sf-submit-bar span{font-size:10px;color:#2e7d32;font-weight:600;}
+.sf-nav-btns{display:flex;gap:8px;}
+.sf-btn-prev{padding:5px 12px;background:white;color:#666;border:1px solid #ccc;border-radius:3px;font-size:10px;cursor:pointer;}
+.sf-btn-next{padding:5px 14px;background:#1565c0;color:white;border-radius:3px;font-size:10px;font-weight:700;cursor:pointer;}
+
+/* ── IMPROVEMENT SUMMARY ── */
+.impr-tbl{width:100%;border-collapse:collapse;table-layout:fixed;}
+.impr-tbl td{vertical-align:top;padding:0;}
+.impr-col{padding:14px 18px;}
+.impr-col h4{font-size:12px;font-weight:700;margin-bottom:10px;}
+.impr-col ul{list-style:none;padding:0;}
+.impr-col ul li{font-size:11px;color:#555;padding:5px 0 5px 20px;border-bottom:1px solid #f0f0f0;position:relative;line-height:1.4;}
+.impr-col ul li:last-child{border-bottom:none;}
+.impr-col ul li::before{position:absolute;left:0;font-size:13px;}
+.before-col{background:#fff8f8;}
+.before-col h4{color:#c62828;}
+.before-col li::before{content:'✕';color:#c62828;}
+.after-col{background:#f8fff8;}
+.after-col h4{color:#2e7d32;}
+.after-col li::before{content:'✓';color:#2e7d32;font-weight:700;}
+
+/* ── DIVIDER ── */
+.divider-wrap{padding:0 36px;margin-bottom:20px;}
+hr.divider{border:none;border-top:1px solid #d0d3d9;}
+</style>
+</head>
+<body>
+
+<!-- ===== PROPOSAL HEADER ===== -->
+<div class="prop-header">
+  <h1>SmartContest UI改善提案 ｜ コンテスト作成フロー</h1>
+  <p>管理者が初めてコンテストを公開するまでの操作体験を改善する</p>
+  <div class="prop-meta">
+    <span class="prop-tag">対象：管理画面（WEB版）</span>
+    <span class="prop-tag">改善点：2件</span>
+    <span class="prop-tag">2026年5月</span>
+    <span class="prop-tag">WWS Corporation → ビザビ社向け</span>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- IMPROVEMENT 1: SETUP FLOW      -->
+<!-- ============================== -->
+<div class="sec-wrap">
+  <div class="sec-heading">改善①　コンテスト設定フロー（全体進捗の見える化）</div>
+  <div class="sec-sub">「コンテスト設定の流れ」ページ：設定ステップを進捗ウィザードに刷新し、何が完了・未完了かを一目で把握できるようにする</div>
+
+  <table class="comp-tbl">
+    <thead>
+      <tr>
+        <th class="th-before">Before ／ 現状</th>
+        <th class="th-after">After ／ 改善案</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- ===== BEFORE ===== -->
+        <td class="td-before">
+          <div class="admin-wrap">
+            <!-- Sidebar -->
+            <div class="admin-sb">
+              <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+              <div class="sb-section">運用</div>
+              <div class="sb-item">ダッシュボード</div>
+              <div class="sb-item">コンテスト投稿一覧</div>
+              <div class="sb-item">コンテストメディア一覧</div>
+              <div class="sb-item">参加者一覧</div>
+              <div class="sb-item">メッセージ送信</div>
+              <div class="sb-section">設定</div>
+              <div class="sb-item active">コンテスト設定の流れ</div>
+              <div class="sb-item">メディアタグ管理</div>
+              <div class="sb-item">参加者タグ管理</div>
+              <div class="sb-item">コンテストタグ管理</div>
+              <div class="sb-item">コンテスト投稿フォーム設定</div>
+              <div class="sb-item">アンケート設定</div>
+              <div class="sb-item">応募受付完了メール設定</div>
+              <div class="sb-item">デザインページビルダー</div>
+              <div class="sb-item">コンテスト投票設定</div>
+              <div class="sb-item">審査設定</div>
+            </div>
+            <!-- Main content -->
+            <div class="admin-main">
+              <div class="page-title">コンテスト設定の流れ</div>
+              <div class="flow-card">
+                <h4>初期設定から公開までの手順（WEB版）</h4>
+                <div class="flow-row">
+                  <div class="flow-num">1</div>
+                  <div class="flow-info">
+                    <h5>タグ設定</h5>
+                    <p>メディア・参加者・コンテストタグの運用方法を決定し登録を行います。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">2</div>
+                  <div class="flow-info">
+                    <h5>投稿フォーム設定</h5>
+                    <p>メディア枚数、作品情報、応募者情報のフォーム内容を登録します。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">3</div>
+                  <div class="flow-info">
+                    <h5>アンケート設定（任意）</h5>
+                    <p>聴取したいアンケートの設問と選択肢を登録します。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">4</div>
+                  <div class="flow-info">
+                    <h5>応募受付完了メール設定</h5>
+                    <p>応募受付後に送信するメール内容を登録します。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">5</div>
+                  <div class="flow-info">
+                    <h5>デザインページビルダー</h5>
+                    <p>ランディングページや共通コンテンツの登録を行います。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">6</div>
+                  <div class="flow-info">
+                    <h5>投票設定（任意）</h5>
+                    <p>一般公開された作品に対して閲覧者からの人気投票を行います。</p>
+                  </div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-num">7</div>
+                  <div class="flow-info">
+                    <h5>審査設定（任意）</h5>
+                    <p>審査員を招いて選考を行います。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+
+        <!-- ===== AFTER ===== -->
+        <td class="td-after">
+          <div class="admin-wrap">
+            <!-- Sidebar with completion badges -->
+            <div class="admin-sb">
+              <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+              <div class="sb-section">運用</div>
+              <div class="sb-item">ダッシュボード</div>
+              <div class="sb-item">コンテスト投稿一覧</div>
+              <div class="sb-item">コンテストメディア一覧</div>
+              <div class="sb-item">参加者一覧</div>
+              <div class="sb-item">メッセージ送信</div>
+              <div class="sb-section">設定</div>
+              <div class="sb-item active">▶ コンテスト設定ウィザード</div>
+              <div class="sb-item" style="font-size:10px;color:#78909c;padding-left:22px;">
+                <span style="color:#43a047;margin-right:4px;">✓</span>タグ設定
+                <span class="sb-badge badge-done" style="margin-left:auto;"></span>
+              </div>
+              <div class="sb-item" style="font-size:10px;color:#78909c;padding-left:22px;">
+                <span style="color:#43a047;margin-right:4px;">✓</span>フォーム設定
+                <span class="sb-badge badge-done" style="margin-left:auto;"></span>
+              </div>
+              <div class="sb-item" style="font-size:10px;color:#90caf9;padding-left:22px;background:rgba(255,255,255,0.06);border-left:3px solid #42a5f5;">
+                <span style="color:#42a5f5;margin-right:4px;font-weight:700;">▶</span>メール設定
+                <span class="sb-badge badge-warn" style="margin-left:auto;"></span>
+              </div>
+              <div class="sb-item" style="font-size:10px;color:#78909c;padding-left:22px;">
+                <span style="color:#546e7a;margin-right:4px;">○</span>デザインPB
+                <span class="sb-badge badge-todo" style="margin-left:auto;"></span>
+              </div>
+              <div class="sb-item" style="font-size:10px;color:#78909c;padding-left:22px;">
+                <span style="color:#546e7a;margin-right:4px;">○</span>投票設定
+                <span class="sb-badge badge-todo" style="margin-left:auto;"></span>
+              </div>
+              <div class="sb-item" style="font-size:10px;color:#78909c;padding-left:22px;">
+                <span style="color:#546e7a;margin-right:4px;">○</span>審査設定
+              </div>
+            </div>
+            <!-- Main: Wizard -->
+            <div class="admin-main">
+              <div class="page-title">コンテスト設定ウィザード <span>公開まで残り 3 ステップ</span></div>
+
+              <!-- Progress bar -->
+              <div class="wizard-bar">
+                <div class="wizard-bar-title">
+                  <span>設定の進捗</span>
+                  <span class="progress-text">4 / 7 完了</span>
+                </div>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar-fill" style="width:57%;"></div>
+                </div>
+                <div class="steps-rail" style="margin-top:10px;">
+                  <div class="step-cell s-done">
+                    <div class="step-circle">✓</div>
+                    <span class="step-label">タグ<br>設定</span>
+                  </div>
+                  <div class="step-cell s-done">
+                    <div class="step-circle">✓</div>
+                    <span class="step-label">フォーム<br>設定</span>
+                  </div>
+                  <div class="step-cell s-done">
+                    <div class="step-circle">✓</div>
+                    <span class="step-label">アンケート<br>設定</span>
+                  </div>
+                  <div class="step-cell s-active">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">メール<br>設定</span>
+                  </div>
+                  <div class="step-cell s-todo">
+                    <div class="step-circle">5</div>
+                    <span class="step-label">デザイン<br>PB</span>
+                  </div>
+                  <div class="step-cell s-todo">
+                    <div class="step-circle">6</div>
+                    <span class="step-label">投票<br>設定</span>
+                  </div>
+                  <div class="step-cell s-todo">
+                    <div class="step-circle">7</div>
+                    <span class="step-label">審査<br>設定</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step list cards -->
+              <div class="wiz-card-group">
+                <div class="wiz-card-group-header">
+                  <span>必須ステップ（公開に必要）</span>
+                  <span style="margin-left:auto;font-size:9px;color:#888;">3/4 完了</span>
+                </div>
+                <!-- Done -->
+                <div class="wiz-card-group-item">
+                  <div class="wcgi-icon-done">✓</div>
+                  <div class="wcgi-text">
+                    <h5>タグ設定 <span class="wcgi-tag-req">必須</span></h5>
+                    <p>メディアタグ・参加者タグ・コンテストタグ — 完了済み</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-edit">編集</button></div>
+                </div>
+                <div class="wiz-card-group-item">
+                  <div class="wcgi-icon-done">✓</div>
+                  <div class="wcgi-text">
+                    <h5>投稿フォーム設定 <span class="wcgi-tag-req">必須</span></h5>
+                    <p>応募フォーム・作品情報・応募期間 — 完了済み</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-edit">編集</button></div>
+                </div>
+                <!-- Current step -->
+                <div class="wiz-card-group-item" style="background:#e3f2fd;">
+                  <div class="wcgi-icon-current">4</div>
+                  <div class="wcgi-text">
+                    <h5>応募受付完了メール設定 <span class="wcgi-tag-req">必須</span></h5>
+                    <p>差出人・件名・本文を設定してください ← 未完了</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-go">設定する →</button></div>
+                </div>
+                <!-- Todo -->
+                <div class="wiz-card-group-item" style="opacity:0.6;">
+                  <div class="wcgi-icon-todo">5</div>
+                  <div class="wcgi-text">
+                    <h5>デザインページビルダー <span class="wcgi-tag-req">必須</span></h5>
+                    <p>LP・ヘッダーロゴ・カラー設定</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-go" style="background:#90a4ae;">設定する →</button></div>
+                </div>
+              </div>
+
+              <div class="wiz-card-group" style="margin-top:8px;">
+                <div class="wiz-card-group-header">
+                  <span>オプションステップ</span>
+                  <span style="margin-left:auto;font-size:9px;color:#888;">1/3 完了</span>
+                </div>
+                <div class="wiz-card-group-item">
+                  <div class="wcgi-icon-done">✓</div>
+                  <div class="wcgi-text">
+                    <h5>アンケート設定 <span class="wcgi-tag-opt">任意</span></h5>
+                    <p>応募時アンケート — 設定済み</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-edit">編集</button></div>
+                </div>
+                <div class="wiz-card-group-item" style="opacity:0.6;">
+                  <div class="wcgi-icon-todo">6</div>
+                  <div class="wcgi-text">
+                    <h5>投票設定 <span class="wcgi-tag-opt">任意</span></h5>
+                    <p>一般ユーザーによる人気投票</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-go" style="background:#90a4ae;">設定する →</button></div>
+                </div>
+                <div class="wiz-card-group-item" style="opacity:0.6;">
+                  <div class="wcgi-icon-todo">7</div>
+                  <div class="wcgi-text">
+                    <h5>審査設定 <span class="wcgi-tag-opt">任意</span></h5>
+                    <p>審査員招待・採点方法の設定</p>
+                  </div>
+                  <div class="wcgi-action"><button class="btn-go" style="background:#90a4ae;">設定する →</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Improvement points -->
+  <table class="impr-tbl" style="margin-top:2px;">
+    <tr>
+      <td style="width:50%;"><div class="impr-col before-col">
+        <h4>現状の課題</h4>
+        <ul>
+          <li>番号リストのみで「完了/未完了」の状態が分からない</li>
+          <li>各ステップへのリンクがなく、どのメニューを開けばいいか分かりにくい</li>
+          <li>必須とオプションの区別が「（任意）」の文字だけ</li>
+          <li>タグ設定が3つの別ページに分散しており漏れが起きやすい</li>
+          <li>途中でどれだけ進んだかが把握できない</li>
+        </ul>
+      </div></td>
+      <td style="width:50%;"><div class="impr-col after-col">
+        <h4>改善後のメリット</h4>
+        <ul>
+          <li>進捗バー＋ステップ完了チェックで残り作業が即座に分かる</li>
+          <li>「設定する→」ボタンで各設定ページに直接ジャンプできる</li>
+          <li>必須／任意をバッジで視覚的に区別し、優先度が明確になる</li>
+          <li>左サイドナビにも完了状態を表示し、どの画面からでも確認できる</li>
+          <li>タグ設定を「タグ設定」1項目にまとめて管理（3ページを1ステップに統合）</li>
+        </ul>
+      </div></td>
+    </tr>
+  </table>
+</div>
+
+<div class="divider-wrap"><hr class="divider"></div>
+
+<!-- ============================== -->
+<!-- IMPROVEMENT 2: FORM STRUCTURE  -->
+<!-- ============================== -->
+<div class="sec-wrap">
+  <div class="sec-heading">改善②　投稿フォーム設定（長大フォームをセクション分け）</div>
+  <div class="sec-sub">「コンテスト投稿フォーム設定」ページ：13項目が縦一列の長いフォームを、テーマ別のセクションに整理する</div>
+
+  <table class="comp-tbl">
+    <thead>
+      <tr>
+        <th class="th-before">Before ／ 現状（13項目が縦一列）</th>
+        <th class="th-after">After ／ 改善案（4セクションに整理）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- ===== BEFORE: Long form ===== -->
+        <td class="td-before" style="background:#f9f9f9;">
+          <div class="lf-wrap">
+            <h4>コンテスト投稿フォーム設定</h4>
+
+            <p class="lf-step-note">① 多言語展開の場合は各言語タブより入力</p>
+            <div class="lf-field">
+              <label>応募フォームのタイトル <span class="req">必須</span></label>
+              <input type="text" value="第1回 932温泉フォトコンテスト">
+            </div>
+            <div class="lf-field">
+              <label>コンテスト概要</label>
+              <textarea>温泉地の魅力を伝える写真・動画を募集します。</textarea>
+            </div>
+            <div class="lf-field">
+              <label>注意事項</label>
+              <textarea>著作権を有するオリジナル作品のみ...</textarea>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">③ 投稿メディアの選択</p>
+            <div class="lf-field">
+              <label>投稿メディア <span class="req">必須</span></label>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>写真</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>動画</span></div>
+              <div class="lf-field" style="margin-top:6px;">
+                <label>必須条件</label>
+                <select><option>写真または動画どちらか必須</option></select>
+              </div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">④ 投稿カテゴリー</p>
+            <div class="lf-field">
+              <label>投稿カテゴリー（任意）</label>
+              <textarea style="height:32px;">photo:写真部門
+movie:動画部門</textarea>
+              <div class="hint">形式：項目名:カテゴリー名（例 photo:写真部門）</div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑤ 取得する作品情報の選択</p>
+            <div class="lf-field">
+              <label>作品情報（取得項目）</label>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>タイトル</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>コメント</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox"><span>撮影地</span></div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑥ 会員登録の要否</p>
+            <div class="lf-field">
+              <label>会員登録</label>
+              <div class="lf-radio-row">
+                <label class="lf-radio-item"><input type="radio" name="member"><span>必須</span></label>
+                <label class="lf-radio-item"><input type="radio" name="member" checked><span>不要</span></label>
+              </div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑦ 聴取する応募者情報</p>
+            <div class="lf-field">
+              <label>応募者情報（取得項目）</label>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>氏名</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox" checked><span>メールアドレス</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox"><span>電話番号</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox"><span>都道府県</span></div>
+              <div class="lf-checkbox-row"><input type="checkbox"><span>年代</span></div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑧ 応募規約</p>
+            <div class="lf-field">
+              <label>応募規約テキスト</label>
+              <textarea>本コンテストへの応募にあたっては、以下の規約に同意...</textarea>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑨ アンケート設定の要否</p>
+            <div class="lf-field">
+              <label>アンケートを利用する</label>
+              <div class="lf-radio-row">
+                <label class="lf-radio-item"><input type="radio" name="enq" checked><span>はい</span></label>
+                <label class="lf-radio-item"><input type="radio" name="enq"><span>いいえ</span></label>
+              </div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑩ 応募完了メッセージ</p>
+            <div class="lf-field">
+              <label>完了メッセージ</label>
+              <textarea>ご応募ありがとうございます。審査結果は後日...</textarea>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑪ 公開設定</p>
+            <div class="lf-field">
+              <label>応募データの初期公開状態</label>
+              <div class="lf-radio-row">
+                <label class="lf-radio-item"><input type="radio" name="pub"><span>公開</span></label>
+                <label class="lf-radio-item"><input type="radio" name="pub" checked><span>非公開</span></label>
+              </div>
+            </div>
+            <hr class="lf-divider">
+            <p class="lf-step-note">⑫ 応募ページの表示方法</p>
+            <div class="lf-field">
+              <label>表示設定</label>
+              <div class="lf-radio-row">
+                <label class="lf-radio-item"><input type="radio" name="disp"><span>常時表示</span></label>
+                <label class="lf-radio-item"><input type="radio" name="disp" checked><span>期間設定</span></label>
+              </div>
+            </div>
+            <div class="lf-field">
+              <label>応募開始日</label>
+              <input type="date" value="2026-06-01">
+            </div>
+            <div class="lf-field">
+              <label>応募終了日</label>
+              <input type="date" value="2026-08-31">
+            </div>
+            <div class="lf-field">
+              <label>非表示時の案内テキスト</label>
+              <textarea>現在、応募受付は終了しています。</textarea>
+            </div>
+            <hr class="lf-divider">
+            <div style="text-align:right;padding-top:6px;">
+              <button style="padding:8px 20px;background:#1565c0;color:white;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-weight:700;">確定する</button>
+            </div>
+          </div>
+        </td>
+
+        <!-- ===== AFTER: Sectioned form ===== -->
+        <td class="td-after">
+          <div class="sectioned-form">
+            <div class="sf-header">
+              <h4>コンテスト投稿フォーム設定</h4>
+              <div class="sf-progress">セクション 2 / 4 を入力中　（全13項目中 6項目 完了）</div>
+            </div>
+
+            <!-- Tab bar (section overview) -->
+            <div class="sf-tab-bar">
+              <div class="sf-tab"><span class="tab-check">✓</span>基本情報</div>
+              <div class="sf-tab active">投稿設定</div>
+              <div class="sf-tab">応募者設定</div>
+              <div class="sf-tab">公開・期間</div>
+            </div>
+
+            <!-- Section 1: 基本情報 (collapsed, done) -->
+            <div class="sf-section">
+              <div class="sf-sec-head" style="background:#e8f5e9;">
+                <span style="color:#43a047;font-size:13px;margin-right:4px;">✓</span>
+                <h5 style="color:#2e7d32;">基本情報</h5>
+                <span class="sf-sec-tag-req">必須</span>
+                <span class="sf-sec-count">3項目 — 完了</span>
+                <span class="sf-sec-toggle">▶</span>
+              </div>
+            </div>
+
+            <!-- Section 2: 投稿設定 (open, active) -->
+            <div class="sf-section" style="border-left:3px solid #1565c0;">
+              <div class="sf-sec-head" style="background:#e3f2fd;">
+                <span style="color:#1565c0;font-size:11px;font-weight:700;margin-right:4px;">▼</span>
+                <h5 style="color:#1565c0;">投稿設定</h5>
+                <span class="sf-sec-tag-req">必須</span>
+                <span class="sf-sec-count" style="color:#1565c0;">4項目</span>
+                <span class="sf-sec-toggle" style="color:#1565c0;">▼</span>
+              </div>
+              <div class="sf-sec-body">
+                <div class="sf-field">
+                  <label>投稿メディア <span class="req">必須</span></label>
+                  <div class="sf-checkbox-row"><input type="checkbox" checked><span>写真</span></div>
+                  <div class="sf-checkbox-row"><input type="checkbox" checked><span>動画</span></div>
+                </div>
+                <div class="sf-field">
+                  <label>必須条件 <span class="req">必須</span></label>
+                  <select><option>写真または動画どちらか必須</option></select>
+                </div>
+                <div class="sf-field">
+                  <label>投稿カテゴリー <span style="font-size:9px;color:#888;">（任意）</span></label>
+                  <textarea>photo:写真部門
+movie:動画部門</textarea>
+                  <div class="sf-hint">形式：項目名:カテゴリー名（例 photo:写真部門）</div>
+                </div>
+                <div class="sf-field">
+                  <label>取得する作品情報</label>
+                  <div class="sf-checkbox-row"><input type="checkbox" checked><span>タイトル</span></div>
+                  <div class="sf-checkbox-row"><input type="checkbox" checked><span>コメント</span></div>
+                  <div class="sf-checkbox-row"><input type="checkbox"><span>撮影地</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: 応募者設定 (collapsed, todo) -->
+            <div class="sf-section">
+              <div class="sf-sec-head">
+                <span style="color:#9e9e9e;font-size:11px;margin-right:4px;">○</span>
+                <h5>応募者設定</h5>
+                <span class="sf-sec-tag-req">必須</span>
+                <span class="sf-sec-count">4項目 — 未入力</span>
+                <span class="sf-sec-toggle">▶</span>
+              </div>
+            </div>
+
+            <!-- Section 4: 公開・期間 (collapsed, todo) -->
+            <div class="sf-section">
+              <div class="sf-sec-head">
+                <span style="color:#9e9e9e;font-size:11px;margin-right:4px;">○</span>
+                <h5>公開・期間設定</h5>
+                <span class="sf-sec-tag-req">必須</span>
+                <span class="sf-sec-count">2項目 — 未入力</span>
+                <span class="sf-sec-toggle">▶</span>
+              </div>
+            </div>
+
+            <!-- Navigation bar -->
+            <div class="sf-submit-bar">
+              <span>セクション 2 / 4</span>
+              <div class="sf-nav-btns">
+                <button class="sf-btn-prev">← 基本情報</button>
+                <button class="sf-btn-next">応募者設定 →</button>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Improvement points -->
+  <table class="impr-tbl" style="margin-top:2px;">
+    <tr>
+      <td style="width:50%;"><div class="impr-col before-col">
+        <h4>現状の課題</h4>
+        <ul>
+          <li>13項目が縦一列で、スクロールしないと全体像が把握できない</li>
+          <li>各項目の関連性・グルーピングが不明確（なぜこの順番？）</li>
+          <li>途中で間違えても、どこを修正すればいいか探しにくい</li>
+          <li>必須・任意の区別が「（任意）」の文字だけで埋もれる</li>
+          <li>ページ下部の「確定する」ボタンまでスクロールが必要</li>
+        </ul>
+      </div></td>
+      <td style="width:50%;"><div class="impr-col after-col">
+        <h4>改善後のメリット</h4>
+        <ul>
+          <li>4セクション（基本情報／投稿設定／応募者設定／公開期間）に分割し、入力箇所が明確</li>
+          <li>タブ＋アコーディオンで「完了」「入力中」「未入力」が色で一目瞭然</li>
+          <li>セクション単位でナビゲーション（← 前 / 次 →）ができ迷わない</li>
+          <li>全体進捗（6/13項目完了）がヘッダーに常時表示される</li>
+          <li>完了済みセクションは折りたたみ表示でページが短くなる</li>
+        </ul>
+      </div></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div style="background:#1a237e;color:rgba(255,255,255,0.6);text-align:center;padding:12px;font-size:10px;margin-top:8px;">
+  SmartContest UI改善提案 ｜ WWS Corporation ｜ 2026年5月
+</div>
+
+</body>
+</html>

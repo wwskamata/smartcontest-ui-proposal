@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SmartContest UI・マニュアル改善提案（8件）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#eaecf0;color:#333;font-size:13px;}
+
+/* ── HEADER ── */
+.hd{background:#1a237e;color:#fff;padding:18px 36px 14px;}
+.hd h1{font-size:20px;font-weight:700;}
+.hd p{font-size:12px;opacity:.75;margin-top:3px;}
+.hd-meta{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.hd-tag{background:rgba(255,255,255,.15);padding:3px 10px;border-radius:12px;font-size:11px;}
+
+/* ── PRIORITY TABLE ── */
+.ptbl-wrap{padding:20px 36px 8px;}
+.ptbl-title{font-size:14px;font-weight:700;color:#1a237e;margin-bottom:10px;}
+.ptbl{width:100%;border-collapse:collapse;font-size:11px;background:white;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.ptbl th{background:#37474f;color:white;padding:8px 10px;text-align:left;font-weight:600;}
+.ptbl td{padding:7px 10px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+.ptbl tr:last-child td{border-bottom:none;}
+.ptbl tr:hover td{background:#f8f9fa;}
+.num-badge{width:20px;height:20px;border-radius:50%;background:#1565c0;color:white;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.pri-hi{background:#ffebee;color:#c62828;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;}
+.pri-md{background:#fff8e1;color:#e65100;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;}
+.pri-lo{background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;}
+.cat-ui{background:#e3f2fd;color:#0d47a1;padding:2px 8px;border-radius:8px;font-size:10px;}
+.cat-doc{background:#f3e5f5;color:#6a1b9a;padding:2px 8px;border-radius:8px;font-size:10px;}
+.eff-s{color:#43a047;font-weight:600;}
+.eff-m{color:#fb8c00;font-weight:600;}
+.eff-l{color:#e53935;font-weight:600;}
+
+/* ── SECTION WRAP ── */
+.sw{padding:16px 36px 4px;}
+.sh{font-size:14px;font-weight:700;color:#1a237e;padding-bottom:7px;border-bottom:2px solid #1a237e;margin-bottom:5px;display:flex;align-items:center;gap:10px;}
+.sh-sub{font-size:11px;color:#666;margin-bottom:14px;}
+.issue-num{width:26px;height:26px;border-radius:50%;background:#1565c0;color:white;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ── COMPARISON TABLE ── */
+.ct{width:100%;border-collapse:collapse;table-layout:fixed;}
+.ct thead tr th{padding:9px 12px;font-size:12px;font-weight:700;text-align:center;}
+.th-b{background:#b71c1c;color:white;border-radius:5px 0 0 0;}
+.th-a{background:#1b5e20;color:white;border-radius:0 5px 0 0;}
+.ct tbody tr td{vertical-align:top;background:white;border:1px solid #ddd;}
+.td-b{border-right:3px solid #888;}
+
+/* ── ADMIN SHELL ── */
+.aw{display:flex;min-height:360px;}
+.sb{width:175px;background:#263238;flex-shrink:0;}
+.sb-logo{padding:10px 12px;background:#1a237e;color:white;font-size:10px;font-weight:700;}
+.sb-logo small{display:block;font-size:9px;font-weight:400;opacity:.7;margin-top:1px;}
+.sb-sec{padding:9px 12px 2px;font-size:9px;color:#546e7a;font-weight:700;letter-spacing:.6px;}
+.sbi{padding:6px 12px;color:#b0bec5;font-size:10.5px;border-left:3px solid transparent;cursor:pointer;}
+.sbi:hover,.sbi.on{color:white;background:rgba(255,255,255,.07);border-left-color:#42a5f5;}
+.sbi.on{color:#90caf9;}
+.sbi.hi-light{color:#ffcc02;background:rgba(255,200,0,.1);border-left-color:#ffcc02;}
+.am{flex:1;background:#f5f6f8;padding:14px;overflow:auto;}
+.pt{font-size:13px;font-weight:700;color:#1a237e;margin-bottom:12px;}
+
+/* ── CONTENT ELEMENTS ── */
+.card{background:white;border:1px solid #e0e0e0;border-radius:5px;padding:12px;margin-bottom:10px;}
+.card h4{font-size:11px;font-weight:700;margin-bottom:8px;color:#333;}
+.tbl-ui{width:100%;border-collapse:collapse;font-size:10px;}
+.tbl-ui th{background:#eceff1;padding:6px 8px;text-align:left;font-weight:600;color:#37474f;border-bottom:2px solid #cfd8dc;}
+.tbl-ui td{padding:6px 8px;border-bottom:1px solid #f0f0f0;}
+.tbl-ui tr:last-child td{border-bottom:none;}
+.tbl-ui tr:hover td{background:#fafafa;}
+/* filter bar */
+.fbar{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.fbar select,.fbar input{padding:4px 7px;border:1px solid #ccc;border-radius:3px;font-size:10px;color:#555;}
+.fbtn{padding:4px 10px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;}
+.fbtn.gray{background:#78909c;}
+.fbtn.green{background:#2e7d32;}
+.fbtn.orange{background:#e65100;}
+/* tab bar */
+.tab-bar{display:flex;border-bottom:2px solid #1565c0;margin-bottom:0;}
+.tab{padding:7px 14px;font-size:11px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab.on{background:white;border-bottom-color:#1565c0;color:#1565c0;}
+.tab-body{background:white;padding:12px;border:1px solid #e0e0e0;border-top:none;}
+/* form elements */
+.ff{margin-bottom:9px;}
+.ff label{display:block;font-size:10px;color:#555;margin-bottom:2px;font-weight:600;}
+.ff input,.ff select,.ff textarea{width:100%;padding:5px 7px;border:1px solid #ccc;border-radius:3px;font-size:10px;color:#444;background:white;font-family:inherit;}
+.ff textarea{height:38px;resize:none;}
+.ff small{font-size:9px;color:#aaa;margin-top:2px;display:block;}
+.toggle-row{display:flex;align-items:center;gap:8px;padding:6px 0;}
+.toggle-box{width:36px;height:18px;border-radius:9px;background:#e0e0e0;position:relative;cursor:pointer;flex-shrink:0;}
+.toggle-box.on{background:#43a047;}
+.toggle-box::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:white;transition:left .2s;}
+.toggle-box.on::after{left:20px;}
+.toggle-label{font-size:10px;color:#333;}
+/* status badges */
+.st-ok{background:#e8f5e9;color:#2e7d32;padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;}
+.st-ng{background:#ffebee;color:#c62828;padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;}
+.st-wait{background:#fff8e1;color:#e65100;padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;}
+.st-hide{background:#f5f5f5;color:#9e9e9e;padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;}
+/* download section */
+.dl-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:3px;font-size:10px;font-weight:600;cursor:pointer;border:none;}
+.dl-csv{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
+.dl-zip{background:#1565c0;color:white;}
+.dl-sel{background:#43a047;color:white;}
+/* section dividers */
+.sec-block{background:white;border:1px solid #e0e0e0;border-radius:5px;overflow:hidden;margin-bottom:10px;}
+.sec-block-head{background:#f0f4f8;padding:8px 12px;font-size:11px;font-weight:700;color:#333;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;gap:6px;}
+.sec-block-body{padding:10px 12px;}
+/* notification badge */
+.notif{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e53935;color:white;font-size:9px;font-weight:700;margin-left:4px;}
+/* preview panel */
+.prev-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;}
+.prev-row:last-child{border-bottom:none;}
+.prev-icon{font-size:14px;width:20px;text-align:center;}
+.prev-text{flex:1;}
+.prev-text h5{font-size:10px;font-weight:700;color:#333;}
+.prev-text span{font-size:9px;color:#888;}
+.prev-pub{font-size:9px;padding:1px 6px;border-radius:6px;}
+.prev-pub.pub{background:#e8f5e9;color:#2e7d32;}
+.prev-pub.unpub{background:#ffebee;color:#c62828;}
+.prev-btn{font-size:9px;padding:3px 8px;background:#1565c0;color:white;border-radius:3px;cursor:pointer;white-space:nowrap;}
+/* sort controls */
+.sort-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#e8eaf6;border-radius:4px;margin-bottom:10px;}
+.sort-label{font-size:10px;color:#3949ab;font-weight:600;}
+.sort-btn{padding:3px 8px;border-radius:12px;font-size:10px;cursor:pointer;border:1px solid transparent;}
+.sort-btn.on{background:#1565c0;color:white;border-color:#1565c0;}
+.sort-btn.off{background:white;color:#555;border-color:#ccc;}
+.sort-order{font-size:10px;color:#888;margin-left:auto;display:flex;align-items:center;gap:4px;}
+.col-sort{cursor:pointer;display:inline-flex;align-items:center;gap:2px;}
+.col-sort::after{content:'⇅';font-size:9px;color:#90a4ae;}
+.col-sort.asc::after{content:'↑';color:#1565c0;}
+.col-sort.desc::after{content:'↓';color:#1565c0;}
+/* checkbox */
+.cb-wrap{display:flex;align-items:center;gap:5px;}
+.cb-wrap input{width:auto;}
+.cb-wrap span{font-size:10px;color:#555;}
+
+/* ── IMPROVEMENT POINTS BAR ── */
+.ip-tbl{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:2px;}
+.ip-b{padding:10px 14px;background:#fff8f8;vertical-align:top;width:50%;}
+.ip-a{padding:10px 14px;background:#f8fff8;vertical-align:top;width:50%;}
+.ip-b h5,.ip-a h5{font-size:11px;font-weight:700;margin-bottom:7px;}
+.ip-b h5{color:#b71c1c;}
+.ip-a h5{color:#1b5e20;}
+.ip-b ul,.ip-a ul{list-style:none;padding:0;}
+.ip-b li,.ip-a li{font-size:11px;color:#555;padding:4px 0 4px 18px;border-bottom:1px solid #f0f0f0;position:relative;line-height:1.45;}
+.ip-b li:last-child,.ip-a li:last-child{border-bottom:none;}
+.ip-b li::before{content:'✕';position:absolute;left:0;color:#c62828;font-size:11px;}
+.ip-a li::before{content:'✓';position:absolute;left:0;color:#2e7d32;font-weight:700;font-size:11px;}
+
+/* ── MANUAL COMPARISON (text) ── */
+.man-card{background:white;border:1px solid #e0e0e0;border-radius:5px;padding:12px;font-size:11px;line-height:1.6;}
+.man-card h4{font-size:11px;font-weight:700;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #eee;}
+.man-card .context{font-size:10px;color:#888;background:#f8f9fa;padding:5px 8px;border-radius:3px;margin-bottom:8px;}
+.man-quote{background:#fff8f8;border-left:3px solid #e53935;padding:8px 10px;font-size:11px;color:#333;line-height:1.6;border-radius:0 3px 3px 0;margin-bottom:6px;}
+.man-improved{background:#f1f8e9;border-left:3px solid #43a047;padding:8px 10px;font-size:11px;color:#333;line-height:1.6;border-radius:0 3px 3px 0;}
+.man-improved strong{color:#1b5e20;}
+.man-flow{margin-top:8px;background:#f8f9fa;border-radius:4px;padding:10px;}
+.man-flow-title{font-size:10px;font-weight:700;color:#555;margin-bottom:6px;}
+.flow-diagram{display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:10px;}
+.fstep{background:#e3f2fd;border:1px solid #90caf9;border-radius:4px;padding:4px 8px;color:#0d47a1;white-space:nowrap;}
+.farrow{color:#888;font-size:12px;}
+.fstep.green{background:#e8f5e9;border-color:#a5d6a7;color:#1b5e20;}
+.fstep.orange{background:#fff3e0;border-color:#ffcc80;color:#e65100;}
+.multi-check{margin-top:8px;}
+.multi-check h5{font-size:10px;font-weight:700;color:#555;margin-bottom:5px;}
+.mc-row{display:flex;align-items:flex-start;gap:6px;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:10px;}
+.mc-row:last-child{border-bottom:none;}
+.mc-num{width:18px;height:18px;border-radius:50%;background:#1565c0;color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.mc-text strong{display:block;color:#333;margin-bottom:1px;}
+.mc-text span{color:#888;font-size:9px;}
+.mc-pages{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
+.mc-page{font-size:9px;padding:1px 6px;background:#e3f2fd;color:#1565c0;border-radius:8px;}
+
+/* ── DIVIDER ── */
+.dv{padding:0 36px 20px;}
+.dv hr{border:none;border-top:1px solid #d0d3d9;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <h1>SmartContest UI・マニュアル改善提案（8件）</h1>
+  <p>フィードバックを受けた改善項目のBefore / After整理</p>
+  <div class="hd-meta">
+    <span class="hd-tag">UI改修：6件</span>
+    <span class="hd-tag">マニュアル改善：2件</span>
+    <span class="hd-tag">2026年5月</span>
+  </div>
+</div>
+
+<!-- PRIORITY MATRIX -->
+<div class="ptbl-wrap">
+  <div class="ptbl-title">改善項目一覧</div>
+  <table class="ptbl">
+    <thead>
+      <tr>
+        <th style="width:34px;">#</th>
+        <th>改善項目</th>
+        <th style="width:70px;">優先度</th>
+        <th style="width:80px;">カテゴリー</th>
+        <th style="width:70px;">工数感</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="num-badge">1</span></td>
+        <td>ヘッダー設定がCSSに埋没・「ロゴ」表記で分かりにくい</td>
+        <td><span class="pri-hi">高</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-m">中（画面構成）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">2</span></td>
+        <td>ページプレビューの確認箇所が分散している</td>
+        <td><span class="pri-md">中</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-s">小（UI追加）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">3</span></td>
+        <td>ユーザー向け応募一覧ページの初期ソート順が固定で変更できない</td>
+        <td><span class="pri-md">中</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-s">小（並び替え追加）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">4</span></td>
+        <td>応募数表示のオン/オフ設定がない</td>
+        <td><span class="pri-lo">低</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-s">小（トグル追加）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">5</span></td>
+        <td>投稿画像を管理画面から直接ダウンロードできない</td>
+        <td><span class="pri-hi">高</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-m">中（一括DL機能）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">6</span></td>
+        <td>マニュアル：会員登録有無でリンク先変更の説明が言葉足らず</td>
+        <td><span class="pri-md">中</span></td>
+        <td><span class="cat-doc">マニュアル</span></td>
+        <td><span class="eff-s">小（テキスト改訂）</span></td>
+      </tr>
+      <tr>
+        <td><span class="num-badge">7</span></td>
+        <td>マニュアル：多言語設定の手順・設定箇所が分散していて把握しにくい</td>
+        <td><span class="pri-md">中</span></td>
+        <td><span class="cat-doc">マニュアル</span></td>
+        <td><span class="eff-s">小（ページ追加）</span></td>
+      </tr>
+      <tr style="background:#fff8e1;">
+        <td><span class="num-badge" style="background:#e65100;">8</span></td>
+        <td><b>新規応募時の管理者通知メールがなく、毎日ログインして手動確認が必要</b></td>
+        <td><span class="pri-hi">高</span></td>
+        <td><span class="cat-ui">UI改修</span></td>
+        <td><span class="eff-m">中（通知機能追加）</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- #1 ヘッダー設定がCSSに埋没                                    -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">1</span>
+    ヘッダー設定がCSSの中に埋没・「ロゴ」表記で分かりにくい
+    <span class="pri-hi" style="margin-left:auto;">高優先度</span>
+  </div>
+  <div class="sh-sub">デザインページビルダーの「CSS設定」にヘッダーロゴ画像が混在。CSSの意味を知らないユーザーが設定箇所にたどり着けない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状</th>
+      <th class="th-a">After ／ 改善案</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="aw">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi">コンテスト設定の流れ</div>
+            <div class="sbi">タグ管理</div>
+            <div class="sbi">投稿フォーム設定</div>
+            <div class="sbi on">デザインページビルダー</div>
+            <div class="sbi">投票設定</div>
+            <div class="sbi">審査設定</div>
+          </div>
+          <div class="am">
+            <div class="pt">デザインページビルダー</div>
+            <div class="tab-bar">
+              <div class="tab on">CSS設定</div>
+              <div class="tab">共通コンテンツ</div>
+              <div class="tab">LPページ</div>
+              <div class="tab">結果ページ</div>
+            </div>
+            <div class="tab-body">
+              <!-- CSS設定の中にロゴが混在している -->
+              <div class="ff">
+                <label>ヘッダーロゴ画像</label>
+                <div style="border:2px dashed #fbc02d;border-radius:4px;padding:10px;text-align:center;background:#fffde7;">
+                  <div style="font-size:10px;color:#888;">画像をドロップ または</div>
+                  <button style="margin-top:4px;padding:3px 10px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:10px;">ファイルを選択</button>
+                </div>
+                <small style="color:#e65100;">※縦40px・横250px推奨</small>
+              </div>
+              <div class="ff" style="margin-top:10px;">
+                <label>CSS（ページ全体のスタイル）</label>
+                <textarea style="height:80px;font-family:monospace;font-size:9px;background:#1e1e1e;color:#d4d4d4;border-color:#555;">.header { background: #1a237e; }
+.btn-primary { background: #42a5f5; }
+.footer { color: #666; }</textarea>
+                <small>配色・フォント等を自由にカスタマイズ</small>
+              </div>
+              <div style="text-align:right;margin-top:6px;">
+                <button style="padding:5px 14px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:10px;font-weight:700;">保存する</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="aw">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi">コンテスト設定の流れ</div>
+            <div class="sbi">タグ管理</div>
+            <div class="sbi">投稿フォーム設定</div>
+            <div class="sbi on">デザイン設定</div>
+            <div class="sbi">投票設定</div>
+            <div class="sbi">審査設定</div>
+          </div>
+          <div class="am">
+            <div class="pt">デザイン設定 <span style="font-size:10px;color:#888;font-weight:400;">（旧：デザインページビルダー）</span></div>
+            <div class="tab-bar">
+              <div class="tab on">🖼 ヘッダー設定</div>
+              <div class="tab">🎨 配色・スタイル</div>
+              <div class="tab">📄 LPページ</div>
+              <div class="tab">🏆 結果ページ</div>
+              <div class="tab">🔗 共通コンテンツ</div>
+            </div>
+            <div class="tab-body">
+              <div style="background:#e3f2fd;border-radius:4px;padding:8px 10px;margin-bottom:10px;font-size:10px;color:#1565c0;">
+                💡 ここでサイトのロゴ（ヘッダー画像）を設定します。すべてのページ上部に表示されます。
+              </div>
+              <div class="ff">
+                <label>ヘッダーロゴ画像 <span style="color:#c62828;font-size:9px;">必須</span></label>
+                <div style="border:2px dashed #90caf9;border-radius:4px;padding:10px;text-align:center;background:#e3f2fd;">
+                  <div style="font-size:10px;color:#1565c0;">画像をドロップ または</div>
+                  <button style="margin-top:4px;padding:3px 10px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:10px;">ファイルを選択</button>
+                </div>
+              </div>
+              <div class="ff">
+                <label>推奨サイズ</label>
+                <div style="font-size:10px;color:#555;background:#f5f5f5;padding:5px 8px;border-radius:3px;">
+                  縦：40px ／ 横：250px以内 ／ PNG・JPG形式
+                </div>
+              </div>
+              <div class="ff">
+                <label>ヘッダー背景色</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="color" value="#1a237e" style="width:36px;height:26px;border:1px solid #ccc;border-radius:3px;padding:1px;">
+                  <input type="text" value="#1a237e" style="width:80px;">
+                  <span style="font-size:10px;color:#888;">例：#1a237e（紺）</span>
+                </div>
+              </div>
+              <div style="text-align:right;margin-top:6px;">
+                <button style="padding:5px 14px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:10px;font-weight:700;">保存する</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>「CSS設定」というタブに"ヘッダーロゴ"が混在しており、非エンジニアには意味が伝わらない</li>
+      <li>"ロゴ"という表記で、それがヘッダー全体を指すのか分からない</li>
+      <li>CSS入力欄とロゴ画像アップロードが同一タブに並んでいて整理されていない</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>「デザイン設定」にリネームし、直感的にたどり着けるようになる</li>
+      <li>「ヘッダー設定」タブを独立させ、ロゴ画像と背景色を1か所で完結</li>
+      <li>CSSの専門知識がなくても設定できることが明確になる</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #2 プレビュー分散                                            -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">2</span>
+    ページプレビューの確認箇所が分散している
+    <span class="pri-md" style="margin-left:auto;">中優先度</span>
+  </div>
+  <div class="sh-sub">ダッシュボードにURL記載 ／ デザインページビルダーに確認リンクと2か所に分散。設定後にすぐ確認できない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状</th>
+      <th class="th-a">After ／ 改善案</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="aw">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">運用</div>
+            <div class="sbi on">ダッシュボード</div>
+          </div>
+          <div class="am">
+            <div class="pt">ダッシュボード</div>
+            <div class="card">
+              <h4>キャンペーン情報</h4>
+              <div style="font-size:10px;color:#555;line-height:1.7;">
+                <div><b>応募ページURL：</b><span style="color:#888;">https://932-onsen.smartcontest.digital/contest/index/1/ja</span></div>
+                <div style="margin-top:4px;color:#e65100;font-size:9px;">※URLをコピーしてブラウザで確認してください</div>
+              </div>
+            </div>
+            <div class="card" style="border:2px dashed #ccc;background:#fafafa;">
+              <h4 style="color:#aaa;">デザインページビルダーのプレビュー確認は別ページから</h4>
+              <div style="font-size:10px;color:#bbb;">設定 → デザインページビルダー → 公開設定 → URL確認</div>
+            </div>
+            <div style="font-size:10px;color:#888;margin-top:6px;padding:6px;background:#fff8e1;border-radius:3px;border:1px solid #ffe082;">
+              ⚠ 投稿一覧ページや応募完了ページのURLは管理画面内に表示されていない
+            </div>
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="aw">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">運用</div>
+            <div class="sbi on">ダッシュボード</div>
+          </div>
+          <div class="am">
+            <div class="pt">ダッシュボード</div>
+            <div class="sec-block">
+              <div class="sec-block-head">🔍 公開ページ確認 <span style="margin-left:auto;font-size:9px;color:#888;">全ページをここから確認できます</span></div>
+              <div class="sec-block-body">
+                <div class="prev-row">
+                  <div class="prev-icon">🏠</div>
+                  <div class="prev-text">
+                    <h5>ランディングページ（LP）</h5>
+                    <span>contest/index/1/ja</span>
+                  </div>
+                  <span class="prev-pub pub">公開中</span>
+                  <button class="prev-btn">開く ↗</button>
+                </div>
+                <div class="prev-row">
+                  <div class="prev-icon">📝</div>
+                  <div class="prev-text">
+                    <h5>応募フォーム</h5>
+                    <span>contest/entry/1/ja</span>
+                  </div>
+                  <span class="prev-pub pub">公開中</span>
+                  <button class="prev-btn">開く ↗</button>
+                </div>
+                <div class="prev-row">
+                  <div class="prev-icon">📷</div>
+                  <div class="prev-text">
+                    <h5>投稿一覧ページ</h5>
+                    <span>contest/list/1/ja</span>
+                  </div>
+                  <span class="prev-pub pub">公開中</span>
+                  <button class="prev-btn">開く ↗</button>
+                </div>
+                <div class="prev-row">
+                  <div class="prev-icon">🏆</div>
+                  <div class="prev-text">
+                    <h5>結果ページ</h5>
+                    <span>contest/result/1/ja</span>
+                  </div>
+                  <span class="prev-pub unpub">未公開</span>
+                  <button class="prev-btn" style="background:#78909c;">開く ↗</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>LPのURLはダッシュボード、デザインPBの公開確認は別ページにあって統一されていない</li>
+      <li>投稿一覧ページや結果ページのURLは管理画面内で確認できない</li>
+      <li>公開/非公開の状態も一覧で把握できない</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>ダッシュボードの「公開ページ確認」パネルに全ページのURL・公開状態を集約</li>
+      <li>「開く↗」ボタン1クリックで各ページを即確認できる</li>
+      <li>未公開ページはグレー表示で見落とし防止</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #3 応募一覧ソート                                           -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">3</span>
+    ユーザー向け応募一覧ページの初期ソート順が固定で変更できない
+    <span class="pri-md" style="margin-left:auto;">中優先度</span>
+  </div>
+  <div class="sh-sub">公開サイトの応募一覧（contest/list）は応募日時昇順で固定表示。運営側でいいね順・新着順など初期ソートを設定できない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状（ユーザー画面・ソート固定）</th>
+      <th class="th-a">After ／ 改善案（管理画面で初期ソートを設定可能）</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE: 公開ユーザー画面 -->
+      <td class="td-b">
+        <div style="background:#f5f5f5;border:1px solid #ddd;border-radius:6px;overflow:hidden;min-height:300px;">
+          <!-- 公開サイト ヘッダー -->
+          <div style="background:#1a237e;color:white;padding:8px 12px;font-size:11px;font-weight:700;">932温泉フォトコンテスト 2026</div>
+          <!-- 応募一覧ページ -->
+          <div style="padding:10px 12px;">
+            <div style="font-size:10px;font-weight:700;color:#333;margin-bottom:8px;">応募作品一覧</div>
+            <!-- ソートUI なし -->
+            <div style="font-size:9px;color:#c62828;background:#fff3e0;border:1px solid #ffcc80;border-radius:3px;padding:4px 7px;margin-bottom:8px;">
+              ⚠ 並び順の設定なし：投稿日時の昇順（古い順）で固定表示
+            </div>
+            <!-- 作品カードグリッド風 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center;">
+                <div style="background:#e0e0e0;height:36px;border-radius:3px;margin-bottom:3px;"></div>
+                <div style="font-size:8px;color:#555;">山田 太郎</div>
+                <div style="font-size:8px;color:#888;">2026/06/01</div>
+                <div style="font-size:8px;color:#888;">♡ 98</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center;">
+                <div style="background:#e0e0e0;height:36px;border-radius:3px;margin-bottom:3px;"></div>
+                <div style="font-size:8px;color:#555;">鈴木 花子</div>
+                <div style="font-size:8px;color:#888;">2026/06/03</div>
+                <div style="font-size:8px;color:#888;">♡ 23</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center;">
+                <div style="background:#e0e0e0;height:36px;border-radius:3px;margin-bottom:3px;"></div>
+                <div style="font-size:8px;color:#555;">田中 一郎</div>
+                <div style="font-size:8px;color:#888;">2026/06/05</div>
+                <div style="font-size:8px;color:#888;">♡ 142</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center;">
+                <div style="background:#e0e0e0;height:36px;border-radius:3px;margin-bottom:3px;"></div>
+                <div style="font-size:8px;color:#555;">佐藤 美咲</div>
+                <div style="font-size:8px;color:#888;">2026/06/07</div>
+                <div style="font-size:8px;color:#888;">♡ 8</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center;">
+                <div style="background:#e0e0e0;height:36px;border-radius:3px;margin-bottom:3px;"></div>
+                <div style="font-size:8px;color:#555;">伊藤 健二</div>
+                <div style="font-size:8px;color:#888;">2026/06/09</div>
+                <div style="font-size:8px;color:#888;">♡ 67</div>
+              </div>
+            </div>
+            <div style="font-size:9px;color:#999;margin-top:8px;text-align:center;">投稿日時の古い順（変更不可）</div>
+          </div>
+        </div>
+      </td>
+      <!-- AFTER: 管理画面でソート設定 + ユーザー画面での結果 -->
+      <td>
+        <div class="aw" style="min-height:300px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi">投稿フォーム設定</div>
+            <div class="sbi on" style="color:#1565c0;font-weight:700;">応募一覧の表示設定</div>
+          </div>
+          <div class="am">
+            <div class="pt">応募一覧の表示設定</div>
+            <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:4px;padding:8px 10px;margin-bottom:8px;">
+              <div style="font-size:9px;font-weight:700;color:#1565c0;margin-bottom:5px;">初期ソート順の設定</div>
+              <div style="font-size:9px;color:#333;margin-bottom:6px;">ユーザー向け応募一覧ページを開いたときの並び順を選択</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <label style="display:flex;align-items:center;gap:5px;font-size:9px;">
+                  <input type="radio" name="sort" checked> <span>❤ いいね数の多い順（人気順）</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:9px;">
+                  <input type="radio" name="sort"> <span>🕐 新着順（投稿日時の新しい順）</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:9px;">
+                  <input type="radio" name="sort"> <span>📅 投稿日時の古い順（現在の固定値）</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:9px;">
+                  <input type="radio" name="sort"> <span>🔀 ランダム表示</span>
+                </label>
+              </div>
+            </div>
+            <div style="font-size:9px;color:#666;background:#f9f9f9;border:1px solid #eee;border-radius:3px;padding:5px 8px;margin-bottom:6px;">
+              ▼ ユーザー画面プレビュー（いいね順 設定時）
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+              <div style="background:white;border:2px solid #ffd54f;border-radius:4px;padding:4px;text-align:center;">
+                <div style="background:#ffe082;height:30px;border-radius:3px;margin-bottom:2px;display:flex;align-items:center;justify-content:center;font-size:8px;">🥇</div>
+                <div style="font-size:8px;color:#555;">田中 一郎</div>
+                <div style="font-size:8px;color:#e53935;font-weight:700;">♡ 142</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:4px;text-align:center;">
+                <div style="background:#e0e0e0;height:30px;border-radius:3px;margin-bottom:2px;"></div>
+                <div style="font-size:8px;color:#555;">山田 太郎</div>
+                <div style="font-size:8px;color:#e53935;">♡ 98</div>
+              </div>
+              <div style="background:white;border:1px solid #ddd;border-radius:4px;padding:4px;text-align:center;">
+                <div style="background:#e0e0e0;height:30px;border-radius:3px;margin-bottom:2px;"></div>
+                <div style="font-size:8px;color:#555;">伊藤 健二</div>
+                <div style="font-size:8px;color:#e53935;">♡ 67</div>
+              </div>
+            </div>
+            <div style="font-size:9px;color:#1565c0;margin-top:5px;text-align:center;">いいね数の多い順で表示</div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>公開サイトの応募一覧が投稿日時の昇順（古い順）で固定表示</li>
+      <li>いいね数の多い人気作品が上位に来ず、閲覧者・投稿者ともに体験が悪い</li>
+      <li>コンテスト運営の目的（人気投票・新着確認など）に応じた設定ができない</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>管理画面で「いいね順・新着順・ランダム」など初期ソートを選択可能</li>
+      <li>投票促進コンテストはいいね順、写真投稿コンテストは新着順など用途別に設定</li>
+      <li>ユーザーのサイト回遊率・投票参加率の向上が見込める</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #4 応募数表示オン/オフ                                       -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">4</span>
+    応募数表示のオン/オフ設定がない
+    <span class="pri-lo" style="margin-left:auto;">低優先度</span>
+  </div>
+  <div class="sh-sub">ダッシュボードの応募数グラフ・数値が常時表示。キャンペーン中に参加者へ応募数を見せたくない場合でも非表示にできない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状</th>
+      <th class="th-a">After ／ 改善案</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="aw" style="min-height:260px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">運用</div>
+            <div class="sbi on">ダッシュボード</div>
+          </div>
+          <div class="am">
+            <div class="pt">ダッシュボード</div>
+            <div style="display:flex;gap:10px;margin-bottom:10px;">
+              <div class="card" style="flex:1;text-align:center;border-top:3px solid #1565c0;">
+                <div style="font-size:22px;font-weight:700;color:#1565c0;">247</div>
+                <div style="font-size:10px;color:#888;">累計応募数</div>
+              </div>
+              <div class="card" style="flex:1;text-align:center;border-top:3px solid #43a047;">
+                <div style="font-size:22px;font-weight:700;color:#43a047;">198</div>
+                <div style="font-size:10px;color:#888;">参加人数</div>
+              </div>
+            </div>
+            <div class="card">
+              <h4>日別応募グラフ</h4>
+              <div style="height:60px;background:linear-gradient(to bottom,#e3f2fd,#f5f5f5);border-radius:4px;display:flex;align-items:flex-end;justify-content:center;padding:8px;gap:3px;">
+                <div style="width:12px;background:#42a5f5;height:20px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#42a5f5;height:35px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#42a5f5;height:45px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#1565c0;height:52px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#42a5f5;height:38px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#42a5f5;height:28px;border-radius:2px 2px 0 0;"></div>
+                <div style="width:12px;background:#42a5f5;height:42px;border-radius:2px 2px 0 0;"></div>
+              </div>
+            </div>
+            <div style="font-size:9px;color:#e65100;margin-top:4px;">※ 応募数の表示設定なし。管理者・応募者ともに常時表示</div>
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="aw" style="min-height:260px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi on">投稿フォーム設定</div>
+          </div>
+          <div class="am">
+            <div class="pt">投稿フォーム設定 <span style="font-size:10px;color:#888;font-weight:400;">— 公開・表示設定</span></div>
+            <div class="sec-block">
+              <div class="sec-block-head">👁 応募数・統計の公開設定</div>
+              <div class="sec-block-body">
+                <div class="toggle-row">
+                  <div class="toggle-box on"></div>
+                  <div class="toggle-label">
+                    <div style="font-size:11px;font-weight:700;">累計応募数をユーザーに公開する</div>
+                    <div style="font-size:9px;color:#888;margin-top:1px;">OFFにすると、投稿一覧ページに応募総数が表示されなくなります</div>
+                  </div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-box"></div>
+                  <div class="toggle-label">
+                    <div style="font-size:11px;font-weight:700;">各作品の投票数をユーザーに公開する</div>
+                    <div style="font-size:9px;color:#888;margin-top:1px;">OFFにすると、投票数が非表示になります（審査期間中など）</div>
+                  </div>
+                </div>
+                <div style="background:#e8f5e9;border-radius:3px;padding:6px 8px;margin-top:6px;font-size:9px;color:#2e7d32;">
+                  ✓ 管理者ダッシュボードの数値・グラフは常に表示されます（管理者のみ）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>応募数がユーザー向けページにも常時表示され、キャンペーン中に意図せず情報が漏れる</li>
+      <li>投票数も常時表示のため、審査前に順位が分かってしまう</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>応募数・投票数のユーザー向け公開をそれぞれON/OFFできる</li>
+      <li>審査期間中だけ投票数を非表示にするなど、フェーズに合わせた運用が可能</li>
+      <li>管理者ダッシュボードの数値は設定に関わらず常時確認できる</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #5 画像ダウンロード                                          -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">5</span>
+    投稿画像を管理画面から直接ダウンロードできない
+    <span class="pri-hi" style="margin-left:auto;">高優先度</span>
+  </div>
+  <div class="sh-sub">現状はCSVに「画像URL」が含まれるだけで、実際の画像ファイルは1枚ずつURLを開いて手動保存するしかない。入賞作品の印刷・掲示に支障が出ている。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状（URLリストのみ）</th>
+      <th class="th-a">After ／ 改善案（複数選択→ZIP一括DL）</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="aw" style="min-height:320px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">運用</div>
+            <div class="sbi on">コンテストメディア一覧</div>
+          </div>
+          <div class="am">
+            <div class="pt">コンテストメディア一覧</div>
+            <div class="fbar">
+              <select><option>メディアタグ: すべて</option></select>
+              <button class="fbtn gray" style="margin-left:auto;">⬇ CSV DL</button>
+            </div>
+            <table class="tbl-ui">
+              <thead><tr>
+                <th>ID</th>
+                <th>サムネイル</th>
+                <th>タイトル</th>
+                <th>審査</th>
+                <th>公開</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>#M01</td>
+                  <td><div style="width:30px;height:30px;background:#90a4ae;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;">IMG</div></td>
+                  <td>朝霧の温泉</td>
+                  <td><span class="st-ok">OK</span></td>
+                  <td><span class="st-ok">公開</span></td>
+                </tr>
+                <tr>
+                  <td>#M02</td>
+                  <td><div style="width:30px;height:30px;background:#78909c;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;">IMG</div></td>
+                  <td>露天風呂</td>
+                  <td><span class="st-ok">OK</span></td>
+                  <td><span class="st-ok">公開</span></td>
+                </tr>
+                <tr>
+                  <td>#M03</td>
+                  <td><div style="width:30px;height:30px;background:#607d8b;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;">IMG</div></td>
+                  <td>湯けむり</td>
+                  <td><span class="st-wait">審査待</span></td>
+                  <td><span class="st-hide">非公開</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:8px;padding:8px;background:#fff8e1;border:1px solid #ffe082;border-radius:3px;font-size:10px;color:#e65100;">
+              ⚠ CSVダウンロードには画像URLが含まれますが、<br>実際の画像ファイルは別途URLを開いて保存が必要です
+            </div>
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="aw" style="min-height:320px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">運用</div>
+            <div class="sbi on">コンテストメディア一覧</div>
+          </div>
+          <div class="am">
+            <div class="pt">コンテストメディア一覧</div>
+            <div class="fbar">
+              <select><option>メディアタグ: すべて</option></select>
+              <select><option>審査OK のみ</option></select>
+              <button class="fbtn">絞り込み</button>
+              <div style="margin-left:auto;display:flex;gap:5px;">
+                <button class="dl-btn dl-csv">⬇ CSV DL</button>
+                <button class="dl-btn dl-zip">📦 選択画像をZIP DL</button>
+              </div>
+            </div>
+            <table class="tbl-ui">
+              <thead><tr>
+                <th><input type="checkbox"></th>
+                <th>ID</th>
+                <th>サムネイル</th>
+                <th>タイトル</th>
+                <th>審査</th>
+              </tr></thead>
+              <tbody>
+                <tr style="background:#f3fffe;">
+                  <td><input type="checkbox" checked></td>
+                  <td>#M01</td>
+                  <td><div style="width:36px;height:36px;background:#42a5f5;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;border:2px solid #1565c0;">IMG</div></td>
+                  <td>朝霧の温泉</td>
+                  <td><span class="st-ok">OK</span></td>
+                </tr>
+                <tr style="background:#f3fffe;">
+                  <td><input type="checkbox" checked></td>
+                  <td>#M02</td>
+                  <td><div style="width:36px;height:36px;background:#42a5f5;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;border:2px solid #1565c0;">IMG</div></td>
+                  <td>露天風呂</td>
+                  <td><span class="st-ok">OK</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td>#M03</td>
+                  <td><div style="width:36px;height:36px;background:#78909c;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;">IMG</div></td>
+                  <td>湯けむり</td>
+                  <td><span class="st-wait">審査待</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:7px 10px;background:#e8f5e9;border-radius:3px;">
+              <span style="font-size:10px;color:#2e7d32;font-weight:600;">2件 選択中</span>
+              <button class="dl-btn dl-sel" style="font-size:10px;padding:4px 12px;">📦 選択した2件をZIPでDL</button>
+              <span style="font-size:9px;color:#888;margin-left:auto;">ファイル名：応募ID_タイトル.jpg</span>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>画像ファイルはCSVに記載されたURLを自分でブラウザに入力して1枚ずつ保存するしかない</li>
+      <li>審査OK作品だけ一括でDLしたい場合に特に手間がかかる</li>
+      <li>ファイル名が自動命名されないため、受賞作品管理が煩雑になる</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>チェックボックスで複数作品を選択して「ZIPでDL」できる</li>
+      <li>「審査OKのみ」フィルター＋全選択で受賞作品を一括取得可能</li>
+      <li>ファイル名を「応募ID_タイトル.jpg」形式で自動命名するので管理しやすい</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #6 マニュアル：会員登録フロー                                -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num">6</span>
+    マニュアル改善：会員登録の有無でリンク先が変わる説明が言葉足らず
+    <span class="pri-md" style="margin-left:auto;">中優先度</span>
+    <span class="cat-doc" style="font-size:11px;margin-left:6px;">マニュアル</span>
+  </div>
+  <div class="sh-sub">「会員登録をしない場合は応募ページのURLを…」という記述だけでは、どのボタンに設定するのか・なぜURLが違うのかが伝わらない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状（操作説明書 P.6 ダッシュボードの記述）</th>
+      <th class="th-a">After ／ 改善案</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="man-card" style="margin:12px;">
+          <h4>📄 現状の記述（P.6 ダッシュボード）</h4>
+          <div class="context">操作手順 No.1 の説明文</div>
+          <div class="man-quote">
+            「会員登録をしない場合は応募ページのURLをデザインビルダーのボタンに登録します。<br>
+            会員登録をする場合はログインページのURLをデザインビルダーのボタンに登録します。」
+          </div>
+          <div style="margin-top:10px;padding:8px;background:#fff8e1;border-radius:3px;border:1px solid #ffe082;font-size:10px;color:#e65100;">
+            ⚠ 以下の点が不明確：<br>
+            ① 「デザインビルダーのボタン」 = どのボタン？どこにある？<br>
+            ② なぜ会員登録あり/なしでURLが変わるのか理由が書かれていない<br>
+            ③ 会員登録ありのLPの「応募する」ボタン → ログインが先という流れが分からない
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="man-card" style="margin:12px;">
+          <h4>📄 改善案（フロー図と設定箇所の明示）</h4>
+          <div class="man-flow">
+            <div class="man-flow-title">▶ 会員登録の設定によってLPボタンのリンク先が変わります</div>
+            <div style="font-size:11px;color:#555;margin-bottom:8px;font-weight:700;">① 会員登録なしの場合（一般的）</div>
+            <div class="flow-diagram">
+              <span class="fstep">LP「応募するボタン」</span>
+              <span class="farrow">→</span>
+              <span class="fstep green">応募フォームURL<br><small>（/contest/entry/）</small></span>
+            </div>
+            <div style="font-size:11px;color:#555;margin:8px 0 5px;font-weight:700;">② 会員登録ありの場合</div>
+            <div class="flow-diagram">
+              <span class="fstep">LP「応募するボタン」</span>
+              <span class="farrow">→</span>
+              <span class="fstep orange">ログインページURL<br><small>（/member/login/）</small></span>
+              <span class="farrow">→</span>
+              <span class="fstep green">応募フォーム</span>
+            </div>
+            <div style="font-size:10px;color:#888;margin-top:8px;line-height:1.5;">
+              💡 会員登録ありの場合、先にログインしてから応募するフローになるため、ログインページのURLをボタンに設定します。
+            </div>
+          </div>
+          <div class="man-improved" style="margin-top:8px;">
+            <strong>設定箇所：</strong>デザインページビルダー →「LPページ」タブ →「応募するボタン」→ リンクURL欄<br><br>
+            <strong>確認方法：</strong>設定後はダッシュボードの「公開ページ確認」パネルからLPを開き、ボタンのリンク先を実際にテストしてください。
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>「デザインビルダーのボタン」という表現だけで、具体的な操作箇所が分からない</li>
+      <li>会員登録あり/なしの違いが「URLが違う」という結論しか書かれておらず、理由が不明</li>
+      <li>初めて操作する担当者が設定を誤るリスクが高い</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>フロー図で「ボタン → ログイン → 応募」の流れが視覚的に分かる</li>
+      <li>設定箇所を「◯◯ → ◯◯ → ◯◯欄」と具体的なパスで明示</li>
+      <li>確認方法まで記載するのでミス設定を自分でチェックできる</li>
+    </ul></td>
+  </tr></table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- #7 マニュアル：多言語設定                                    -->
+<!-- ============================================================ -->
+<div class="sw" style="padding-bottom:24px;">
+  <div class="sh">
+    <span class="issue-num">7</span>
+    マニュアル改善：多言語設定の手順・設定箇所が各ページに分散
+    <span class="pri-md" style="margin-left:auto;">中優先度</span>
+    <span class="cat-doc" style="font-size:11px;margin-left:6px;">マニュアル</span>
+  </div>
+  <div class="sh-sub">「多言語展開する場合、最初に『デザインページビルダー』で言語設定を…」という注意書きが各設定ページに個別に記載されており、どこで何を設定すればよいか全体像が掴めない。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状（各ページに散在する注意書き）</th>
+      <th class="th-a">After ／ 改善案（多言語設定チェックリストページを追加）</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="man-card" style="margin:12px;">
+          <h4>📄 現状：各ページの注意書きが唯一の手引き</h4>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">P.20 コンテスト投稿フォーム設定</div>
+            <div class="man-quote">「多言語展開する場合、最初に『デザインページビルダー』で言語設定を行ってください（P.28参照）」</div>
+          </div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">P.24 参加者情報取得設定（LINE版）</div>
+            <div class="man-quote">「多言語展開する場合、最初に『デザインページビルダー』で言語設定を行ってください（P.28参照）」</div>
+          </div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:10px;color:#888;margin-bottom:3px;">P.20〜P.26 各設定の先頭</div>
+            <div class="man-quote">「多言語展開の場合、各言語のタブから情報を登録します。」</div>
+          </div>
+          <div style="padding:8px;background:#fff8e1;border:1px solid #ffe082;border-radius:3px;font-size:10px;color:#e65100;">
+            ⚠ 問題点：<br>
+            ① どこで何が多言語対応しているか一覧が存在しない<br>
+            ② 「先に言語設定を」という指示だけで、設定箇所の場所が不明<br>
+            ③ 多言語非対応の箇所（全言語共通の項目など）が明示されていない<br>
+            ④ 対応言語（日・英・簡・繁・韓）の設定順序が不明
+          </div>
+        </div>
+      </td>
+      <!-- AFTER -->
+      <td>
+        <div class="man-card" style="margin:12px;">
+          <h4>📄 改善案：「多言語設定チェックリスト」ページを新設</h4>
+          <div class="multi-check">
+            <h5>多言語展開の設定手順（全◯ステップ）</h5>
+            <div class="mc-row">
+              <div class="mc-num">1</div>
+              <div class="mc-text">
+                <strong>デザインページビルダーで言語を追加（必須・最初に実施）</strong>
+                <span>追加言語を選択して保存。この操作を先に行わないと各設定で言語タブが表示されない。</span>
+                <div class="mc-pages"><span class="mc-page">デザインページビルダー → 言語設定</span></div>
+              </div>
+            </div>
+            <div class="mc-row">
+              <div class="mc-num">2</div>
+              <div class="mc-text">
+                <strong>各設定の言語タブで内容を入力</strong>
+                <span>以下のページに「言語タブ」が表示されます。各言語のテキストを入力してください。</span>
+                <div class="mc-pages">
+                  <span class="mc-page">投稿フォーム設定</span>
+                  <span class="mc-page">参加者情報設定</span>
+                  <span class="mc-page">デザインPB（LP・結果）</span>
+                  <span class="mc-page">リプライメッセージ</span>
+                </div>
+              </div>
+            </div>
+            <div class="mc-row">
+              <div class="mc-num">3</div>
+              <div class="mc-text">
+                <strong>全言語共通で設定する項目（言語タブなし）</strong>
+                <span>以下は全言語で同一内容が適用されます（翻訳入力は不要）。</span>
+                <div class="mc-pages">
+                  <span class="mc-page">投稿カテゴリーの「項目名」部分</span>
+                  <span class="mc-page">タグ設定</span>
+                  <span class="mc-page">アカウント設定</span>
+                </div>
+              </div>
+            </div>
+            <div class="mc-row">
+              <div class="mc-num">4</div>
+              <div class="mc-text">
+                <strong>確認：言語別URLでプレビュー</strong>
+                <span>各言語のURLは /ja /en /zh-CN /zh-TW /ko で分岐します。</span>
+                <div class="mc-pages">
+                  <span class="mc-page">例：/contest/index/1/en（英語版LP）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#e8f5e9;border-radius:3px;padding:6px 8px;margin-top:8px;font-size:9px;color:#2e7d32;">
+            ✓ このチェックリストはマニュアルの独立ページとして追加します（P.2〜3の「設定の流れ」ページに倣った構成）
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+  <table class="ip-tbl"><tr>
+    <td class="ip-b"><h5>現状の課題</h5><ul>
+      <li>多言語設定の全体像を把握できるページが存在しない</li>
+      <li>「先に言語設定を」という注意書きが各ページに同文で繰り返されるだけ</li>
+      <li>言語タブが出る設定ページと出ない設定ページの区別が明示されていない</li>
+      <li>設定漏れに気づきにくく、一部言語で空欄表示になるリスクがある</li>
+    </ul></td>
+    <td class="ip-a"><h5>改善後のメリット</h5><ul>
+      <li>4ステップのチェックリストで設定手順が一覧で把握できる</li>
+      <li>「言語タブがあるページ」と「全言語共通のページ」を明確に区別して記載</li>
+      <li>確認用URLのパターン（/ja /en …）を明示し、設定後の検証が容易になる</li>
+      <li>既存の「設定の流れ」ページの構成に倣うため、マニュアルの一貫性が保たれる</li>
+    </ul></td>
+  </tr></table>
+</div>
+
+<!-- ============================================================ -->
+<!-- #8 管理者通知メール                                          -->
+<!-- ============================================================ -->
+<div class="sw">
+  <div class="sh">
+    <span class="issue-num" style="background:#e65100;">8</span>
+    新規応募時の管理者通知メールがなく、毎日ログインして手動確認が必要
+    <span class="pri-hi" style="margin-left:auto;">高優先度</span>
+  </div>
+  <div class="sh-sub">応募受付完了メールは応募者へのみ送信される。管理者への通知は一切なく、新着確認のためにダッシュボードへ毎日アクセスしなければならない。PDF・オンラインマニュアル両方に記載なし＝現在未実装。</div>
+
+  <table class="ct">
+    <thead><tr>
+      <th class="th-b">Before ／ 現状（通知なし・毎日ログイン確認）</th>
+      <th class="th-a">After ／ 改善案（管理者通知メール設定を追加）</th>
+    </tr></thead>
+    <tbody><tr>
+      <!-- BEFORE -->
+      <td class="td-b">
+        <div class="aw" style="min-height:360px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi">投稿フォーム設定</div>
+            <div class="sbi on">応募受付完了メール設定</div>
+            <div class="sbi" style="color:#546e7a;opacity:.5;">（管理者通知メール）</div>
+            <div class="sbi" style="color:#546e7a;opacity:.5;font-size:9px;padding-left:16px;">← 設定項目なし</div>
+          </div>
+          <div class="am">
+            <div class="pt">応募受付完了メール設定</div>
+            <div class="card">
+              <h4 style="color:#888;">このメールは「応募者向け」の自動返信メールです</h4>
+              <div class="ff">
+                <label>送信元メールアドレス</label>
+                <input type="text" value="noreply@smartcontest.digital">
+              </div>
+              <div class="ff">
+                <label>メール件名</label>
+                <input type="text" value="【ご応募ありがとうございます】932温泉フォトコンテスト">
+              </div>
+              <div class="ff">
+                <label>本文</label>
+                <textarea style="height:50px;">この度はご応募いただきありがとうございます。...</textarea>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding:10px;background:#fff8e1;border:1px solid #ffe082;border-radius:4px;font-size:10px;color:#e65100;line-height:1.7;">
+              ⚠ <b>管理者への新着通知は存在しない</b><br>
+              新規応募を確認するには毎日管理画面にログインして<br>
+              ダッシュボードの応募数グラフを目視確認する必要がある
+            </div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:6px;padding:8px 10px;background:#f5f5f5;border-radius:4px;font-size:10px;color:#888;">
+              <span>📅 担当者の日課：毎朝管理画面を開いて応募数を確認</span>
+            </div>
+          </div>
+        </div>
+      </td>
+
+      <!-- AFTER -->
+      <td>
+        <div class="aw" style="min-height:360px;">
+          <div class="sb">
+            <div class="sb-logo">SmartContest<small>932-onsen</small></div>
+            <div class="sb-sec">設定</div>
+            <div class="sbi">投稿フォーム設定</div>
+            <div class="sbi">応募受付完了メール設定</div>
+            <div class="sbi on" style="color:#ffcc02;border-left-color:#ffcc02;background:rgba(255,200,0,.1);">🔔 管理者通知メール設定</div>
+          </div>
+          <div class="am">
+            <div class="pt">管理者通知メール設定 <span style="font-size:10px;color:#43a047;font-weight:400;">● 新規追加設定</span></div>
+
+            <div class="sec-block">
+              <div class="sec-block-head">📬 通知先メールアドレス</div>
+              <div class="sec-block-body">
+                <div class="ff">
+                  <label>通知先1 <span style="color:#c62828;font-size:9px;">必須</span></label>
+                  <input type="text" value="admin@cho-ei.co.jp" placeholder="管理担当者のメールアドレス">
+                </div>
+                <div class="ff">
+                  <label>通知先2 <span style="font-size:9px;color:#888;">（任意・複数設定可）</span></label>
+                  <input type="text" placeholder="例：manager@cho-ei.co.jp">
+                </div>
+                <div style="font-size:9px;color:#888;margin-top:2px;">最大5件まで登録できます</div>
+              </div>
+            </div>
+
+            <div class="sec-block">
+              <div class="sec-block-head">⏱ 通知タイミング</div>
+              <div class="sec-block-body">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                  <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;padding:6px 10px;border:2px solid #1565c0;border-radius:4px;background:#e3f2fd;">
+                    <input type="radio" name="notify" checked style="width:auto;">
+                    <div><b style="color:#1565c0;">即時通知</b><br><span style="font-size:9px;color:#888;">応募のたびに1件ずつ送信</span></div>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;padding:6px 10px;border:1px solid #ccc;border-radius:4px;background:white;">
+                    <input type="radio" name="notify" style="width:auto;">
+                    <div><b>日次サマリー</b><br><span style="font-size:9px;color:#888;">毎日指定時刻に当日分をまとめて送信</span></div>
+                  </label>
+                </div>
+                <div class="ff" style="display:none;" id="daily-time">
+                  <label>送信時刻</label>
+                  <input type="time" value="08:00" style="width:auto;">
+                </div>
+              </div>
+            </div>
+
+            <div class="sec-block">
+              <div class="sec-block-head">📧 通知メールの内容プレビュー</div>
+              <div class="sec-block-body">
+                <div style="background:#f8f8f8;border:1px solid #e0e0e0;border-radius:4px;padding:10px;font-size:10px;line-height:1.7;">
+                  <div style="color:#888;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px;">
+                    件名：【新規応募】932温泉フォトコンテスト ／ 田中一郎 さんが応募しました
+                  </div>
+                  <div style="color:#333;">
+                    新規応募がありました。<br><br>
+                    ■ 応募者：田中 一郎<br>
+                    ■ 作品タイトル：朝霧の温泉<br>
+                    ■ 応募日時：2026/06/15 14:32<br>
+                    ■ カテゴリー：写真部門<br><br>
+                    ▼ 管理画面で確認する<br>
+                    <span style="color:#1565c0;">https://932-onsen.smartcontest.digital/private/...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align:right;margin-top:8px;">
+              <button style="padding:6px 16px;background:#1565c0;color:white;border:none;border-radius:3px;font-size:11px;font-weight:700;">保存する</button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr></tbody>
+  </table>
+
+  <!-- 代替案バナー -->
+  <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:5px;padding:12px 16px;margin-top:4px;display:flex;align-items:flex-start;gap:12px;">
+    <div style="font-size:18px;flex-shrink:0;">💡</div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#6a1b9a;margin-bottom:5px;">開発待ちの暫定対応：API ＋ 外部自動化ツールで即日実現可能</div>
+      <div style="font-size:11px;color:#555;line-height:1.6;">
+        SmartContestの既存APIには<b>メディア取得エンドポイント（GET /api/contest/media）</b>があります。<br>
+        <b>Zapier / Make（旧Integromat）</b> などの外部ツールを使ってAPIを定期ポーリングし、新着があればメール・Slack・LINE通知を送る構成が<b>開発なしで実現可能</b>です。
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <div style="font-size:10px;padding:3px 10px;background:#e8eaf6;border-radius:10px;color:#3949ab;">API定期取得（5分間隔）</div>
+        <div style="font-size:10px;color:#888;">→</div>
+        <div style="font-size:10px;padding:3px 10px;background:#e8eaf6;border-radius:10px;color:#3949ab;">新着件数を差分チェック</div>
+        <div style="font-size:10px;color:#888;">→</div>
+        <div style="font-size:10px;padding:3px 10px;background:#e8f5e9;border-radius:10px;color:#2e7d32;">メール / Slack / LINE 通知</div>
+      </div>
+    </div>
+  </div>
+
+  <table class="ip-tbl" style="margin-top:2px;">
+    <tr>
+      <td class="ip-b"><h5>現状の課題</h5><ul>
+        <li>応募受付完了メールは応募者向けのみ。管理者への通知は存在しない</li>
+        <li>新着確認のために毎日ログインが必要。見落とし・確認漏れのリスク</li>
+        <li>審査・当選連絡などの後続作業の開始が遅れる</li>
+        <li>PDFにもオンラインマニュアルにも通知機能の記載なし（未実装と判断）</li>
+      </ul></td>
+      <td class="ip-a"><h5>改善後のメリット</h5><ul>
+        <li>応募があった瞬間に担当者メールへ通知が届く（即時通知）</li>
+        <li>複数担当者へ同報可能（最大5件）</li>
+        <li>日次サマリーモードで朝イチに前日分をまとめて確認する運用も可</li>
+        <li>開発待ちの間はAPI＋Zapier/Makeで暫定対応が即日可能</li>
+      </ul></td>
+    </tr>
+  </table>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- マニュアル比較：PDF vs オンライン                             -->
+<!-- ============================================================ -->
+<div class="sw" style="padding-bottom:24px;">
+  <div class="sh" style="border-bottom-color:#6a1b9a;color:#6a1b9a;">
+    <span style="width:26px;height:26px;border-radius:50%;background:#6a1b9a;color:white;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">比</span>
+    マニュアル比較：操作説明書（PDF）vs オンラインマニュアル
+    <span style="margin-left:auto;background:#f3e5f5;color:#6a1b9a;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">3つの観点で整理</span>
+  </div>
+  <div class="sh-sub">操作説明書 Ver4.2.0（PDF・40ページ）と オンラインマニュアル（storage.googleapis.com/smart-contest-docs）を全ページ照合した結果</div>
+
+  <!-- 凡例 -->
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><span style="width:12px;height:12px;background:#c62828;border-radius:2px;display:inline-block;"></span>PDFのみ（オンラインに記載なし）</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><span style="width:12px;height:12px;background:#1565c0;border-radius:2px;display:inline-block;"></span>オンラインのみ（PDFに記載なし）</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><span style="width:12px;height:12px;background:#e65100;border-radius:2px;display:inline-block;"></span>両方にあるが内容に差異あり</div>
+  </div>
+
+  <!-- TABLE 1: オンラインのみ -->
+  <div style="background:white;border:1px solid #bbdefb;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:#1565c0;padding:9px 14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:12px;font-weight:700;color:white;">📲 オンラインマニュアルのみに記載（PDFに記載なし）</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+      <thead>
+        <tr style="background:#e3f2fd;">
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#0d47a1;border-bottom:2px solid #90caf9;width:28%;">項目</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#0d47a1;border-bottom:2px solid #90caf9;width:45%;">オンラインマニュアルの記載内容</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#0d47a1;border-bottom:2px solid #90caf9;width:27%;">影響・対応</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#fff;">
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;font-weight:700;color:#0d47a1;">🆕 インサイト機能</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;color:#555;line-height:1.5;">統計データの多角的分析ページ。15メトリクス（投稿数・投票数・参加者数・日別投稿数・都道府県分布・クロス集計・ランキングなど）を表示。期間フィルター・CSV出力・ランキング機能あり。データは1日1回・翌日反映。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDFに記載なし</span><br><span style="font-size:10px;color:#888;margin-top:3px;display:block;">操作説明書への追加が必要</span></td>
+        </tr>
+        <tr style="background:#f8fbff;">
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;font-weight:700;color:#0d47a1;">🔗 API ドキュメント</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;color:#555;line-height:1.5;">7エンドポイント（LINE Webhook API・コンテスト公開API・LIFF API）。メディア取得・投票・ユーザー検索・カテゴリ送信などを網羅。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;"><span style="background:#e8f5e9;color:#2e7d32;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">技術者向けのため<br>PDF不要と判断可</span></td>
+        </tr>
+        <tr style="background:#fff;">
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;font-weight:700;color:#0d47a1;">🛠 トラブルシューティング</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;color:#555;line-height:1.5;">各設定ページ（フォーム設定・メール設定など）に埋め込み。配信失敗の原因・フォーム非表示時の対処・設定が反映されない場合など。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #e3f2fd;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDFに記載なし</span><br><span style="font-size:10px;color:#888;margin-top:3px;display:block;">問い合わせ削減に効果的</span></td>
+        </tr>
+        <tr style="background:#f8fbff;">
+          <td style="padding:7px 10px;font-weight:700;color:#0d47a1;">📋 埋め込みコード一覧（13種）</td>
+          <td style="padding:7px 10px;color:#555;line-height:1.5;">メール設定ページに埋め込みコード一覧表（13種類）と記載例を掲載。{{氏名}}・{{メールアドレス}}・{{応募ID}}など具体的なコードを明示。</td>
+          <td style="padding:7px 10px;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDFは注意書きのみ</span><br><span style="font-size:10px;color:#888;margin-top:3px;display:block;">PDF版も一覧表に刷新すべき</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TABLE 2: PDFのみ -->
+  <div style="background:white;border:1px solid #ffcdd2;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:#c62828;padding:9px 14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:12px;font-weight:700;color:white;">📄 操作説明書（PDF）のみに記載（オンラインに記載なし）</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+      <thead>
+        <tr style="background:#ffebee;">
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#b71c1c;border-bottom:2px solid #ef9a9a;width:28%;">項目</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#b71c1c;border-bottom:2px solid #ef9a9a;width:45%;">PDFの記載内容</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#b71c1c;border-bottom:2px solid #ef9a9a;width:27%;">影響・対応</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;font-weight:700;color:#c62828;">LINE版の設定全般<br><span style="font-size:9px;font-weight:400;">(P.24〜26)</span></td>
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;color:#555;line-height:1.5;">参加者情報取得設定（LINE版）・リプライメッセージ設定の操作手順を3ページにわたり掲載。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;"><span style="background:#fff3e0;color:#e65100;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">オンラインに未掲載</span><br><span style="font-size:10px;color:#888;margin-top:3px;display:block;">LINE版利用者の拠り所がPDFのみ</span></td>
+        </tr>
+        <tr style="background:#fff8f8;">
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;font-weight:700;color:#c62828;">アクセス権限の詳細表<br><span style="font-size:9px;font-weight:400;">(P.38)</span></td>
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;color:#555;line-height:1.5;">管理者／審査員の画面アクセス権限を表形式で整理（◯ / ー）。全画面の権限状況を一覧把握できる。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #ffebee;"><span style="background:#fff3e0;color:#e65100;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">オンラインは「権限一覧」<br>ページのみ（内容要確認）</span></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;font-weight:700;color:#c62828;">コンテストメディア詳細<br>・参加者情報詳細<br><span style="font-size:9px;font-weight:400;">(P.11・P.13)</span></td>
+          <td style="padding:7px 10px;color:#555;line-height:1.5;">個別の作品詳細・参加者情報の画面操作手順を各1ページ掲載。</td>
+          <td style="padding:7px 10px;"><span style="background:#e8f5e9;color:#2e7d32;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">オンラインでは一覧ページ<br>内に統合されている可能性</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TABLE 3: 両方にあるが差異あり -->
+  <div style="background:white;border:1px solid #ffe0b2;border-radius:6px;overflow:hidden;">
+    <div style="background:#e65100;padding:9px 14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:12px;font-weight:700;color:white;">⚠ 両方に記載あり・しかし内容に差異あり（要修正）</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+      <thead>
+        <tr style="background:#fff3e0;">
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#bf360c;border-bottom:2px solid #ffcc80;width:18%;">項目</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#bf360c;border-bottom:2px solid #ffcc80;width:35%;">PDF の記述</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#bf360c;border-bottom:2px solid #ffcc80;width:35%;">オンラインマニュアルの記述</th>
+          <th style="padding:7px 10px;text-align:left;font-weight:700;color:#bf360c;border-bottom:2px solid #ffcc80;width:12%;">対応</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;font-weight:700;color:#bf360c;">アンケート設定</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;color:#555;line-height:1.5;">設定の流れ（P.2）に「任意」として名前のみ記載。専用の操作ページは存在しない。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;line-height:1.5;"><b style="color:#c62828;">「アンケートは多言語非対応・日本語のみ」</b>と明示。フォーム設定内のスイッチでON/OFF。ただし設定一覧に独立ページなし。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDF要追記</span></td>
+        </tr>
+        <tr style="background:#fffbf5;">
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;font-weight:700;color:#bf360c;">完了メール設定<br>の多言語</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;color:#555;line-height:1.5;">差出人・件名・本文の登録手順のみ（P.33）。埋め込みコードの注意書きのみ。<b style="color:#c62828;">多言語に関する記述なし。</b></td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;line-height:1.5;"><b style="color:#c62828;">「日本語のみ対応（多言語非対応）」と明記。</b>埋め込みコード一覧（13種）・本文記載例・トラブルシューティング3件あり。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDF要追記</span></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;font-weight:700;color:#bf360c;">設定フローの<br>ステップ分類</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;color:#555;line-height:1.5;">WEB版・LINE版それぞれ7ステップを番号リストで記載（P.2〜3）。必須/任意の区別が「（任意）」の文字のみ。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;line-height:1.5;">設定カードを「<b>基本設定（必須）</b>」「<b>推奨</b>」「<b>任意</b>」で分類。ステータス（設定済/未設定）も表示。より実用的な構成。</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #fff3e0;"><span style="background:#fff3e0;color:#e65100;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">PDF更新推奨</span></td>
+        </tr>
+        <tr style="background:#fffbf5;">
+          <td style="padding:7px 10px;font-weight:700;color:#bf360c;">多言語設定の<br>制約の明示</td>
+          <td style="padding:7px 10px;color:#555;line-height:1.5;">「各言語のタブから入力」という指示のみ。どの機能が多言語対応で、どの機能が非対応なのかの一覧がない。</td>
+          <td style="padding:7px 10px;line-height:1.5;">アンケート・メールが「日本語のみ」と個別ページで明示。ただし非対応項目の一覧ページは存在しない。</td>
+          <td style="padding:7px 10px;"><span style="background:#ffebee;color:#c62828;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;">両方要追記</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="dv"><hr></div>
+
+<!-- ============================================================ -->
+<!-- 社内確認事項（多言語対応）                                    -->
+<!-- ============================================================ -->
+<div class="sw" style="padding-bottom:24px;">
+  <div class="sh" style="border-bottom-color:#e65100;color:#e65100;">
+    <span style="width:26px;height:26px;border-radius:50%;background:#e65100;color:white;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">?</span>
+    社内確認事項：多言語対応の範囲
+    <span style="margin-left:auto;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">開発チームへ要確認</span>
+  </div>
+  <div class="sh-sub">クライアントから問い合わせあり。マニュアルに記載なし。SmartContest開発担当への確認が必要。</div>
+
+  <!-- 確認事項カード -->
+  <div style="background:white;border:1px solid #ffe0b2;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:#fff3e0;padding:9px 14px;border-bottom:1px solid #ffe0b2;display:flex;align-items:center;gap:8px;">
+      <span style="width:22px;height:22px;border-radius:50%;background:#e65100;color:white;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">Q1</span>
+      <span style="font-size:12px;font-weight:700;color:#bf360c;">アンケートと応募受付完了メールは日本語・英語で別々に設定できるか？</span>
+    </div>
+    <div style="padding:12px 16px;">
+      <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+        <thead>
+          <tr>
+            <th style="width:25%;background:#f5f5f5;padding:6px 10px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0e0;">設定ページ</th>
+            <th style="width:30%;background:#f5f5f5;padding:6px 10px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0e0;">マニュアルの記載</th>
+            <th style="width:20%;background:#f5f5f5;padding:6px 10px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #e0e0e0;">多言語タブ</th>
+            <th style="width:25%;background:#f5f5f5;padding:6px 10px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0e0;">判断</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:600;">投稿フォーム設定</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#555;">「各言語のタブから情報を登録します」と明記あり</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">あり ✓</span></td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#2e7d32;font-weight:600;">対応済（確認不要）</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:600;">デザインページビルダー</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#555;">「言語を選択します。メイン言語を選択します」と明記あり</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">あり ✓</span></td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#2e7d32;font-weight:600;">対応済（確認不要）</td>
+          </tr>
+          <tr style="background:#fff8f8;">
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:600;color:#c62828;">アンケート設定</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#555;">多言語タブへの言及なし</td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">記載なし</span></td>
+            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">⚠ 要確認</span></td>
+          </tr>
+          <tr style="background:#fff8f8;">
+            <td style="padding:7px 10px;font-weight:600;color:#c62828;">応募受付完了メール設定</td>
+            <td style="padding:7px 10px;color:#555;">差出人・件名・本文の登録のみ。言語タブへの言及なし</td>
+            <td style="padding:7px 10px;text-align:center;"><span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">記載なし</span></td>
+            <td style="padding:7px 10px;"><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">⚠ 要確認</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;background:#fff3e0;border-radius:4px;padding:8px 12px;font-size:11px;color:#bf360c;line-height:1.6;">
+        <b>確認依頼内容：</b>アンケート設定・応募受付完了メール設定に言語タブ（日本語 / 英語）は存在するか？<br>
+        非対応の場合、言語別に別テキストで設定できる機能追加を要望として提出する。
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div style="background:white;border:1px solid #ffe0b2;border-radius:6px;overflow:hidden;">
+    <div style="background:#fff3e0;padding:9px 14px;border-bottom:1px solid #ffe0b2;display:flex;align-items:center;gap:8px;">
+      <span style="width:22px;height:22px;border-radius:50%;background:#e65100;color:white;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">Q2</span>
+      <span style="font-size:12px;font-weight:700;color:#bf360c;">日本語版と英語版をそれぞれ別の日に公開することは可能か？</span>
+    </div>
+    <div style="padding:12px 16px;">
+      <div style="font-size:11px;color:#555;margin-bottom:10px;line-height:1.6;">
+        現状マニュアルの「応募期間設定」は<b>フォーム全体に1セット</b>（開始日・終了日）のみ。<br>
+        言語ごとに異なる公開日を設定する項目は記載がない。
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;background:#fff8f8;border:1px solid #ffcdd2;border-radius:4px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:700;color:#c62828;margin-bottom:6px;">現状の設定構造（マニュアルより）</div>
+          <div style="font-size:10px;color:#555;line-height:1.8;">
+            応募ページの表示方法<br>
+            　① 常時表示<br>
+            　② 期間設定（開始日 〜 終了日）← 全言語共通<br>
+            　　終了後：非表示時の案内テキストを表示
+          </div>
+        </div>
+        <div style="flex:1;background:#fff3e0;border:1px solid #ffe0b2;border-radius:4px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:700;color:#e65100;margin-bottom:6px;">クライアントの要望（確認したい設定）</div>
+          <div style="font-size:10px;color:#555;line-height:1.8;">
+            日本語版：2026/06/01 〜 公開開始<br>
+            英語版　：2026/06/15 〜 公開開始（別日）<br>
+            → 言語ごとに公開スケジュールを分けたい
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;background:#fff3e0;border-radius:4px;padding:8px 12px;font-size:11px;color:#bf360c;line-height:1.6;">
+        <b>確認依頼内容：</b>言語ごとに表示期間（開始日・終了日）を個別設定できるか？<br>
+        非対応の場合、運用回避策（英語版LPのみ後日デザインPBで公開するなど）を確認する。
+      </div>
+    </div>
+  </div>
+
+  <!-- アクションボックス -->
+  <div style="margin-top:14px;background:#e8eaf6;border:1px solid #9fa8da;border-radius:6px;padding:12px 16px;">
+    <div style="font-size:12px;font-weight:700;color:#1a237e;margin-bottom:8px;">📋 社内確認アクション</div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+      <thead>
+        <tr>
+          <th style="width:8%;padding:5px 8px;background:#1a237e;color:white;text-align:center;border-radius:4px 0 0 0;">#</th>
+          <th style="width:52%;padding:5px 8px;background:#1a237e;color:white;text-align:left;">確認内容</th>
+          <th style="width:20%;padding:5px 8px;background:#1a237e;color:white;text-align:center;">確認先</th>
+          <th style="width:20%;padding:5px 8px;background:#1a237e;color:white;text-align:center;border-radius:0 4px 0 0;">ステータス</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:white;">
+          <td style="padding:6px 8px;text-align:center;border-bottom:1px solid #e8eaf6;font-weight:700;">Q1</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #e8eaf6;">アンケート・完了メールに言語別設定タブがあるか</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #e8eaf6;text-align:center;color:#1a237e;font-weight:600;">オンラインマニュアルで確認</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #e8eaf6;text-align:center;"><span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">❌ 非対応確定</span><br><span style="font-size:9px;color:#888;">日本語のみ（オンラインに明記）</span></td>
+        </tr>
+        <tr style="background:white;">
+          <td style="padding:6px 8px;text-align:center;font-weight:700;">Q2</td>
+          <td style="padding:6px 8px;">言語ごとに公開開始日を個別設定できるか（または代替案）</td>
+          <td style="padding:6px 8px;text-align:center;color:#1a237e;font-weight:600;">SC開発担当</td>
+          <td style="padding:6px 8px;text-align:center;"><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;">未確認</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#1a237e;color:rgba(255,255,255,.6);text-align:center;padding:12px;font-size:10px;">
+  SmartContest UI・マニュアル改善提案（8件）＋社内確認事項（2件） ｜ WWS Corporation ｜ 2026年5月
+</div>
+
+</body>
+</html>
