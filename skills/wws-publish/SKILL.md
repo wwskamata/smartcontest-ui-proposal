@@ -1,7 +1,7 @@
 # wws-publish スキル
 ## HTMLモックアップを staticrypt で暗号化して GitHub Pages に公開する
 
-**対象**: wws-proposal / wws-pitch-deck で生成した HTML 提案資料  
+**対象**: wws-ws-saas-spec-html-internal / wws-ws-saas-hearing-pptx-public で生成した HTML 提案資料  
 **目的**: クライアント・代理店向けにパスワード付きURLで安全共有する
 
 ---

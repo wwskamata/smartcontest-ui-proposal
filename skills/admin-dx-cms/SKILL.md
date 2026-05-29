@@ -43,7 +43,7 @@ description: |
 - 製品知識 → `references/products.md` を必ず参照する
 - 参照元スクリプト → `generate_pitch_entre_support.js`（13スライド実装済み）
 - テンプレート → `C:\Users\kamat\scripts\_tpl_generate_pitch.js`（P1〜P5のみ）
-- 本スキルは wws-proposal スキルの Admin-DX CMS 版として位置づける
+- 本スキルは wws-ws-saas-spec-html-internal スキルの Admin-DX CMS 版として位置づける
 
 ---
 

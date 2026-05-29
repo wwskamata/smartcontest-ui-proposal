@@ -40,13 +40,13 @@ wws-local-project/
 │   └── pitch_transit_v2_202505.pptx     ← [案件①] 旧版
 ├── .mcp.json                        ← MCP サーバー設定（wws-skills 登録済み）
 └── skills/                          ← スキルファイル
-    ├── wws-proposal/                 ← SmartStampCard等 社内総合シート生成スキル
+    ├── wws-ws-saas-spec-html-internal/  ← 社内総合シート・仕様書生成スキル（旧wws-proposal）
     │   ├── SKILL.md
     │   └── references/
     │       ├── mockup-layout.md      ← レイアウト確定ルール（必読）
     │       ├── products.md           ← プロダクト仕様・料金
     │       └── se-requirements.md   ← 工数算定テンプレ・スキル名定義
-    ├── wws-pitch-deck/              ← SmartStampCard等 提案先向けPPTX生成スキル
+    ├── wws-ws-saas-hearing-pptx-public/ ← 提案先向けPPTX生成スキル（旧wws-pitch-deck）
     │   ├── SKILL.md
     │   └── references/
     │       └── slide-templates.md   ← 各スライドのpptxgenjsコード
@@ -107,4 +107,4 @@ wws-local-project/
   → create_html_mockup / create_pptx / publish_html / list_projects の4ツール利用可能
   → .mcp.json（プロジェクト）＋ ~/.claude.json（グローバル）の両方に登録済み
 - ピッチデッキをクライアントフィードバック後に改版
-- wws-proposalスキルを新案件に適用
+- wws-ws-saas-spec-html-internalスキルを新案件に適用
