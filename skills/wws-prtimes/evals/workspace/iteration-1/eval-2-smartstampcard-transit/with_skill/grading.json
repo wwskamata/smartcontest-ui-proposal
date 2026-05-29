@@ -1,0 +1,38 @@
+{
+  "expectations": [
+    {
+      "text": "タイトルが40字以内である",
+      "passed": false,
+      "evidence": "採用タイトル「バスや電車に乗るだけでスタンプが貯まる。岡山県公共交通利用促進キャンペーン、2026年10月スタート。」は51字。40字制限を大幅に超過している"
+    },
+    {
+      "text": "リード文が200字以内である",
+      "passed": true,
+      "evidence": "リード文は「株式会社 World Wide System（本社：[所在地]...」で始まる段落で、目視での文字数は200字以内と判断。ただし「## リード文」ヘッダー形式および（XX字）末尾が付いていない"
+    },
+    {
+      "text": "GPS・乗降判定・スタンプの仕組みが説明されている",
+      "passed": true,
+      "evidence": "「SmartStampCard とは」セクションでGPS乗降判定とスタンプ付与の仕組みが説明されている"
+    },
+    {
+      "text": "LINEログイン・アプリDL不要の特長が記載されている",
+      "passed": true,
+      "evidence": "リード文および特長セクションで「アプリのダウンロード不要、LINEログインだけで参加」と明示されている"
+    },
+    {
+      "text": "PR TIMES入稿チェックリストが含まれている",
+      "passed": false,
+      "evidence": "出力にPR TIMES入稿チェックリストセクションが見当たらない（iteration-1のスキルではチェックリスト形式が未整備）"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 2,
+    "total": 5,
+    "pass_rate": 0.6
+  },
+  "timing": {
+    "total_duration_seconds": 86.8
+  }
+}

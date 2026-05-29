@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "smartstampcard-transit",
+  "prompt": "SmartStampCardを使った公共交通利用促進キャンペーンのプレスリリースを書いて。バス・電車に乗るとGPSでスタンプが貯まり、賞品に応募できる仕組み。岡山県の行政案件を想定。開始時期は2026年10月。アプリDL不要・LINEログインで参加できる点が特長。",
+  "assertions": [
+    { "id": "title_length", "text": "タイトルが40字以内である", "type": "programmatic" },
+    { "id": "lead_length", "text": "リード文が200字以内である", "type": "programmatic" },
+    { "id": "gps_feature_mentioned", "text": "GPS・乗降判定・スタンプの仕組みが説明されている", "type": "llm" },
+    { "id": "line_login_mentioned", "text": "LINEログイン・アプリDL不要の特長が記載されている", "type": "llm" },
+    { "id": "checklist_present", "text": "PR TIMES入稿チェックリストが含まれている", "type": "llm" }
+  ]
+}

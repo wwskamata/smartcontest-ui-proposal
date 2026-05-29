@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "wws-skills": {
+      "command": "node",
+      "args": ["C:/Users/kamat/wws-mcp-server/server.js"],
+      "type": "stdio"
+    }
+  }
+}

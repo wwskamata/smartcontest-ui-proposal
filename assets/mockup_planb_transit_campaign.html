@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>モックアップ｜公共交通キャンペーン プランB（MapPenguin連携版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+/* ① タイトルバー */
+#titlebar{
+  background:#fff;border-bottom:2px solid #1b5e20;
+  padding:0 20px;height:44px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+  font-family:"Noto Sans JP",sans-serif;
+}
+#titlebar h1{font-size:13px;font-weight:700;color:#333;}
+#titlebar p{font-size:9px;color:#888;margin-top:1px;}
+.legend{display:flex;gap:12px;font-size:10px;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:4px;}
+.lbox{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
+.lbox.c{border:2px solid #e53935;background:#fff5f5;}
+.lbox.m{background:#e8f5e9;border:1px solid #1b5e20;}
+.lbox.o{background:#fff;border:1px solid #ccc;}
+
+/* ② フロー図 */
+#flowbar{
+  background:#fff;border-bottom:2px solid #e0e0e0;
+  padding:10px 20px 12px;
+  font-family:"Noto Sans JP",sans-serif;
+}
+#flowbar .ftitle{font-size:12px;font-weight:700;color:#333;border-left:4px solid #1b5e20;padding-left:8px;margin-bottom:10px;}
+
+/* ③ テーブルレイアウト */
+#panels-table{
+  width:100%;border-collapse:collapse;table-layout:fixed;
+  font-family:"Noto Sans JP",sans-serif;font-size:12px;
+}
+#panels-table > tbody > tr > td{vertical-align:top;padding:0;}
+
+#td-left{width:320px;background:#f0f0f0;border-right:2px solid #e0e0e0;}
+#td-left-inner{
+  height:calc(100vh - 44px - 116px);
+  overflow-y:auto;padding:14px 8px 48px;
+}
+#td-right{background:#fff;}
+#td-right-inner{
+  height:calc(100vh - 44px - 116px);
+  overflow-y:auto;padding:14px 16px 48px;
+}
+
+.grid{display:flex;flex-direction:column;align-items:center;gap:32px;}
+
+/* バッジ */
+.screen-ids{position:absolute;top:0;right:-6px;display:flex;flex-direction:column;gap:3px;align-items:flex-end;z-index:20;}
+.screen-ids span{font-size:8px;font-weight:700;padding:2px 7px;border-radius:99px;box-shadow:0 1px 4px rgba(0,0,0,0.18);}
+.id-cust{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.id-std {background:#dcfce7;color:#166534;border:1px solid #86efac;}
+.id-reci{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+.id-ops {background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.id-map {background:#e8f5e9;color:#1b5e20;border:1px solid #81c784;}
+
+/* スクリーンラベル */
+.screen-wrap{display:flex;flex-direction:column;align-items:center;position:relative;}
+.screen-label{font-size:11px;color:#555;margin-top:8px;font-weight:700;}
+.screen-sub{font-size:10px;color:#888;margin-top:2px;text-align:center;}
+
+/* フォン */
+.phone{width:280px;background:#fff;border-radius:36px;border:1.5px solid #ccc;box-shadow:0 4px 16px rgba(0,0,0,0.13);padding:10px;}
+.phone-inner{border-radius:28px;overflow:hidden;background:#fff;min-height:560px;display:flex;flex-direction:column;border:1px solid #e8e8e8;}
+
+/* ステータスバー */
+.sb{display:flex;justify-content:space-between;padding:7px 16px 3px;font-size:9px;font-weight:700;color:#333;background:#fff;}
+
+/* マイページ */
+.bg-mint{background:#eaf6f2;}
+.user-line{font-size:11px;color:#666;padding:6px 14px 0;background:#eaf6f2;}
+.pt-area{padding:4px 14px 8px;background:#eaf6f2;}
+.pt-num{font-size:28px;font-weight:700;color:#222;line-height:1.1;}
+.pt-unit{font-size:12px;color:#222;}
+.pt-link{font-size:10px;color:#1b5e20;text-decoration:underline;display:block;margin-top:2px;}
+.pt-expiry{font-size:9px;color:#999;margin-top:2px;}
+
+/* スタンプグリッド */
+.stamp-area{padding:8px 14px;background:#eaf6f2;}
+.stamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+.stamp{aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
+.stamp.got{background:#4caf50;border:none;}
+.stamp.got .s-num{font-size:11px;font-weight:700;color:#fff;line-height:1;}
+.stamp.got .s-bar{width:60%;height:2px;background:rgba(255,255,255,0.5);border-radius:1px;margin-bottom:1px;}
+.stamp.empty{background:#e0e0e0;border:none;}
+.stamp.empty .s-num{font-size:11px;font-weight:700;color:#bbb;line-height:1;}
+.stamp.empty .s-bar{width:60%;height:2px;background:rgba(0,0,0,0.1);border-radius:1px;margin-bottom:1px;}
+.stamp-page{font-size:9px;color:#999;text-align:center;margin-top:4px;}
+
+/* ボタン */
+.btn-red{background:#c8373a;color:#fff;border:none;border-radius:6px;width:calc(100% - 28px);margin:0 14px;padding:11px;font-size:12px;font-weight:700;font-family:inherit;display:block;cursor:pointer;}
+.btn-outline{background:#fff;color:#555;border:1px solid #ccc;border-radius:6px;width:calc(100% - 28px);margin:6px 14px 0;padding:9px;font-size:11px;font-family:inherit;display:block;cursor:pointer;}
+.btn-green-full{background:#4caf50;color:#fff;border:none;border-radius:6px;width:calc(100% - 28px);margin:6px 14px 0;padding:10px;font-size:12px;font-weight:700;font-family:inherit;display:block;cursor:pointer;}
+.btn-map-primary{background:#1b5e20;color:#fff;border:none;border-radius:6px;width:calc(100% - 28px);margin:6px 14px 0;padding:11px;font-size:12px;font-weight:700;font-family:inherit;display:block;cursor:pointer;}
+
+/* 賞品カード */
+.prize-section{padding:8px 14px 0;background:#eaf6f2;}
+.prize-card{background:#fff;border-radius:8px;border:1.5px solid #4caf50;overflow:hidden;margin-bottom:8px;}
+.prize-img-area{width:100%;height:80px;background:linear-gradient(135deg,#f1f8e9,#c8e6c9);display:flex;align-items:center;justify-content:center;font-size:32px;}
+.prize-pt-bar{background:#4caf50;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;}
+.prize-info{padding:6px 10px 8px;}
+.prize-name{font-size:11px;font-weight:700;color:#333;}
+.prize-desc{font-size:9px;color:#888;margin-top:1px;}
+
+/* 応募モーダル */
+.modal-overlay-bg{position:relative;flex:1;background:rgba(0,0,0,0.35);display:flex;flex-direction:column;justify-content:flex-end;padding:10px;}
+.modal-box{background:#fff;border-radius:10px;padding:14px;}
+.modal-title{font-size:11px;font-weight:700;color:#333;margin-bottom:3px;}
+.modal-sub{font-size:9px;color:#888;margin-bottom:10px;line-height:1.5;}
+.modal-item{display:flex;align-items:center;gap:8px;border:1px solid #eee;border-radius:6px;padding:8px;margin-bottom:8px;}
+.modal-thumb{width:44px;height:44px;border-radius:5px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.modal-pt-badge{display:inline-block;background:#1b5e20;color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;}
+.modal-item-name{font-size:10px;font-weight:700;color:#333;margin-top:2px;}
+.modal-item-desc{font-size:9px;color:#888;}
+
+/* LINE ログイン */
+.line-body{padding:24px 20px;flex:1;background:#fff;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.line-logo-w{width:48px;height:48px;border-radius:50%;background:#1b5e20;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;}
+.line-camp-name{font-size:13px;font-weight:700;color:#333;text-align:center;}
+.line-note{font-size:9px;color:#888;text-align:center;line-height:1.6;}
+.btn-line{width:100%;background:#06c755;color:#fff;border:none;border-radius:6px;padding:12px;font-size:13px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* レシート */
+.reci-body{padding:8px 14px;flex:1;background:#fff;display:flex;flex-direction:column;gap:8px;}
+.reci-note{font-size:9px;color:#888;line-height:1.6;}
+.upload-zone{border:1.5px dashed #bbb;border-radius:6px;padding:16px;text-align:center;color:#999;}
+.upload-icon{font-size:28px;margin-bottom:4px;}
+.upload-text{font-size:11px;font-weight:500;color:#666;}
+.upload-sub{font-size:9px;color:#bbb;margin-top:2px;}
+.btn-camera{display:inline-block;margin-top:8px;background:#1d4ed8;color:#fff;border:none;border-radius:4px;padding:7px 16px;font-size:11px;font-weight:700;font-family:inherit;}
+.result-table{border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;}
+.result-hd{background:#4caf50;color:#fff;padding:5px 10px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.result-row{display:flex;justify-content:space-between;padding:5px 10px;font-size:10px;border-bottom:1px solid #f5f5f5;}
+.result-row:last-child{border-bottom:none;}
+.r-k{color:#888;}.r-v{font-weight:600;color:#333;}.r-v.ok{color:#4caf50;}
+.notice-yellow{background:#fffde7;border-left:3px solid #e87722;padding:7px 9px;font-size:9px;color:#795548;border-radius:0 5px 5px 0;line-height:1.6;}
+
+/* カスタムマーク */
+.custom-mark{position:relative;border:2px solid #e53935 !important;border-radius:4px;background:#fff5f5 !important;}
+.custom-mark::before{content:"✏️ カスタム";position:absolute;top:-10px;right:4px;background:#fff5f5;color:#c62828;border:1px solid #e53935;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;white-space:nowrap;z-index:10;font-family:'Noto Sans JP',sans-serif;}
+
+/* マップ専用 */
+.map-bg{position:relative;background:#e8f5e9;flex:1;overflow:hidden;}
+.map-road-h{position:absolute;left:0;right:0;height:6px;background:#fff;opacity:0.8;}
+.map-road-v{position:absolute;top:0;bottom:0;width:6px;background:#fff;opacity:0.8;}
+.map-pin{position:absolute;width:18px;height:18px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.3);z-index:5;}
+.map-pin.bus{background:#4caf50;color:#fff;}
+.map-pin.spot{background:#1d4ed8;color:#fff;}
+.map-pin.me{background:#e87722;color:#fff;border-color:#c45a00;}
+.map-search-bar{position:absolute;top:8px;left:10px;right:10px;background:#fff;border-radius:20px;padding:6px 12px;font-size:10px;color:#666;box-shadow:0 2px 6px rgba(0,0,0,0.15);z-index:10;display:flex;align-items:center;gap:6px;}
+.map-chip-row{position:absolute;top:40px;left:10px;display:flex;gap:4px;z-index:10;}
+.map-chip{background:#fff;border:1px solid #ccc;border-radius:12px;padding:2px 8px;font-size:9px;color:#555;}
+.map-chip.active{background:#e8f5e9;border-color:#4caf50;color:#1b5e20;font-weight:700;}
+.map-legend{position:absolute;bottom:58px;right:10px;background:rgba(255,255,255,0.92);border-radius:6px;padding:5px 8px;font-size:8px;color:#555;line-height:1.8;box-shadow:0 1px 4px rgba(0,0,0,0.12);}
+.map-my-loc{position:absolute;bottom:58px;left:10px;background:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+.map-bottom-bar{background:#fff;padding:6px 10px;font-size:9px;color:#888;border-top:1px solid #e0e0e0;}
+
+/* ボトムシート */
+.bottom-sheet-overlay{background:rgba(0,0,0,0.25);flex:1;position:relative;}
+.bottom-sheet{background:#fff;border-radius:12px 12px 0 0;padding:12px 14px;border-top:1px solid #e0e0e0;}
+.bs-handle{width:36px;height:3px;background:#ddd;border-radius:2px;margin:0 auto 8px;}
+.bs-title{font-size:12px;font-weight:700;color:#333;margin-bottom:2px;}
+.bs-sub{font-size:9px;color:#888;margin-bottom:8px;}
+.bs-row{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:10px;color:#555;}
+.bs-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.btn-board-here{background:#1b5e20;color:#fff;border:none;border-radius:6px;width:100%;padding:10px;font-size:12px;font-weight:700;font-family:inherit;margin-top:6px;}
+
+/* GPS確認 */
+.gps-confirm-card{margin:8px 14px;background:#f0fff4;border:1.5px solid #4caf50;border-radius:8px;padding:12px;text-align:center;}
+.gps-loc-name{font-size:13px;font-weight:700;color:#1b5e20;margin-bottom:4px;}
+.gps-dist{font-size:10px;color:#888;}
+.gps-pt-badge{display:inline-block;background:#1b5e20;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:99px;margin:6px 0;}
+.pt-complete-area{background:#f0fff4;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.pt-complete-icon{font-size:40px;margin-bottom:8px;}
+.pt-complete-num{font-size:26px;font-weight:700;color:#1b5e20;}
+.pt-complete-sub{font-size:10px;color:#888;margin-top:4px;}
+
+/* 近くのリスト */
+.stop-list-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #f5f5f5;}
+.stop-dot{width:10px;height:10px;border-radius:50%;background:#4caf50;flex-shrink:0;}
+.stop-name{font-size:11px;font-weight:700;color:#333;}
+.stop-dist{font-size:9px;color:#888;}
+.stop-arrow{margin-left:auto;color:#aaa;font-size:12px;}
+
+/* ポイント履歴 */
+.hist-item{display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:1px solid #f5f5f5;}
+.hist-icon{font-size:16px;flex-shrink:0;}
+.hist-name{font-size:10px;font-weight:700;color:#333;}
+.hist-date{font-size:9px;color:#aaa;}
+.hist-pt{font-size:11px;font-weight:700;color:#1b5e20;margin-left:auto;}
+.badge-pending{display:inline-block;background:#fef3c7;color:#92400e;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid #fcd34d;}
+.badge-approved{display:inline-block;background:#dcfce7;color:#166534;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid #86efac;}
+
+/* 応募フォーム */
+.form-section{padding:8px 14px;flex:1;background:#fff;display:flex;flex-direction:column;gap:8px;}
+.form-group label{font-size:9px;color:#888;display:block;margin-bottom:2px;}
+.form-group input{width:100%;border:1px solid #ddd;border-radius:4px;padding:7px 8px;font-size:11px;font-family:inherit;background:#fafafa;}
+.form-submit{background:#c8373a;color:#fff;border:none;border-radius:6px;width:100%;padding:11px;font-size:12px;font-weight:700;font-family:inherit;margin-top:4px;}
+
+/* 観光キャンペーン */
+.camp-banner{padding:10px 14px;color:#fff;font-weight:700;}
+.camp-banner.tourism{background:linear-gradient(135deg,#1565c0,#1e88e5);}
+.camp-banner.daily{background:linear-gradient(135deg,#2e7d32,#43a047);}
+.camp-title{font-size:12px;margin-bottom:2px;}
+.camp-period{font-size:9px;opacity:0.85;}
+.camp-pt-badge{display:inline-block;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.5);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:3px;margin-top:3px;}
+.handover-badge{display:inline-block;background:#fff3e0;color:#e65100;font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid #ffcc02;margin:4px 14px;}
+
+/* スペーサー */
+.sp4{height:4px;}.sp8{height:8px;}.sp12{height:12px;}
+
+/* サマリーアコーディオン */
+#summary-bar{background:#e8f5e9;border-top:2px solid #1b5e20;border-bottom:2px solid #1b5e20;font-family:"Noto Sans JP",sans-serif;}
+#summary-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;cursor:pointer;user-select:none;background:transparent;border:none;width:100%;font-family:"Noto Sans JP",sans-serif;transition:background .15s;}
+#summary-toggle:hover{background:rgba(27,94,32,0.08);}
+#summary-toggle-left{display:flex;align-items:center;gap:10px;}
+#summary-toggle-label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#1b5e20;}
+#summary-toggle-label .stag{font-size:10px;font-weight:700;background:#1b5e20;color:#fff;padding:3px 10px;border-radius:3px;letter-spacing:.5px;}
+.summary-hint{font-size:9px;color:#1b5e20;font-weight:700;border:1px solid #1b5e20;border-radius:99px;padding:1px 8px;white-space:nowrap;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+#summary-toggle-arrow{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;background:#1b5e20;color:#fff;padding:4px 10px;border-radius:4px;transition:background .15s;white-space:nowrap;}
+#summary-toggle-arrow.open{background:#0a3d0e;}
+#summary-body{display:none;overflow-y:auto;max-height:60vh;padding:0 20px 24px;background:#f9f9f9;border-top:1px solid #c8e6c9;}
+#summary-body.open{display:block;}
+body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:#f5f5f5;color:#333;}
+.section{background:#fff;border-radius:10px;padding:28px 32px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.section-title{font-size:15px;font-weight:700;color:#333;border-left:4px solid #1b5e20;padding-left:12px;margin-bottom:18px;}
+.section-title span{font-size:11px;font-weight:400;color:#888;margin-left:10px;}
+h3{font-size:13px;font-weight:700;color:#555;margin:16px 0 8px;}
+p{line-height:1.8;color:#444;margin-bottom:10px;}
+blockquote{background:#f9f9f9;border-left:3px solid #1b5e20;padding:10px 14px;border-radius:0 6px 6px 0;font-size:12px;color:#555;line-height:1.8;margin:8px 0;}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+th{background:#1b5e20;color:#fff;padding:9px 12px;text-align:left;font-weight:700;}
+td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;line-height:1.6;}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even){background:#fafafa;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.badge-cust{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.badge-std{background:#dcfce7;color:#166534;border:1px solid #86efac;}
+.badge-reci{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+.badge-ops{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.badge-map{background:#e8f5e9;color:#1b5e20;border:1px solid #81c784;}
+.badge-big{background:#fee2e2;color:#991b1b;font-weight:900;}
+.badge-mid{background:#fef3c7;color:#92400e;}
+.badge-sm{background:#dcfce7;color:#166534;}
+.badge-cfg{background:#f0f0f0;color:#666;}
+.product-block{background:#f9fffe;border:1.5px solid #4caf50;border-radius:8px;padding:14px 16px;margin:8px 0;}
+.product-name{font-size:13px;font-weight:700;color:#2e7d32;margin-bottom:6px;}
+.product-item{font-size:12px;color:#555;padding:3px 0;padding-left:14px;position:relative;line-height:1.6;}
+.product-item::before{content:"└";position:absolute;left:0;color:#4caf50;}
+.product-block.reci{background:#f0f4ff;border-color:#1d4ed8;}
+.product-block.reci .product-name{color:#1e40af;}
+.product-block.reci .product-item::before{color:#1d4ed8;}
+.product-block.map{background:#f1f8e9;border-color:#1b5e20;}
+.product-block.map .product-name{color:#1b5e20;}
+.product-block.map .product-item::before{color:#1b5e20;}
+.check-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:12px;}
+.check-num{width:20px;height:20px;border-radius:50%;background:#1b5e20;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.check-text{color:#444;line-height:1.6;flex:1;}
+.check-tag{font-size:9px;font-weight:700;color:#e53935;margin-left:4px;}
+.note{font-size:10px;color:#aaa;margin-top:8px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- ① タイトルバー -->
+<div id="titlebar">
+  <div>
+    <h1>公共交通利用促進キャンペーン｜プランB モックアップ（MapPenguin連携版）</h1>
+    <p>SmartStampCard × SmartRecieco × MapPenguin ／ 乗車1回=1pt・ペア判定なし・マップからバス停検索</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;">
+    <span class="id-map" style="font-size:10px;padding:3px 10px;">MapPenguin 地図連携</span>
+    <span class="id-cust" style="font-size:10px;padding:3px 10px;">シンプルGPS・1乗車1pt</span>
+    <button onclick="toggleSummary()"
+       style="background:#1b5e20;color:#fff;border-radius:5px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;font-family:'Noto Sans JP',sans-serif;">
+      📄 案件サマリー
+    </button>
+    <div style="width:1px;height:20px;background:#e0e0e0;margin:0 4px;"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="lbox c"></div><span>✏️ 拡張開発</span></div>
+      <div class="legend-item"><div class="lbox m"></div><span>MapPenguin</span></div>
+      <div class="legend-item"><div class="lbox o"></div><span>標準UI</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSummary(){
+  var body=document.getElementById('summary-body');
+  var arrow=document.getElementById('summary-toggle-arrow');
+  var hint=document.querySelector('.summary-hint');
+  var isOpen=body.classList.contains('open');
+  if(isOpen){body.classList.remove('open');arrow.classList.remove('open');arrow.textContent='▼ 開く';if(hint)hint.textContent='▼ クリックして開く';}
+  else{body.classList.add('open');arrow.classList.add('open');arrow.textContent='▲ 閉じる';if(hint)hint.textContent='▲ クリックして閉じる';}
+}
+</script>
+
+<!-- 案件サマリー アコーディオン -->
+<div id="summary-bar">
+  <button id="summary-toggle" onclick="toggleSummary()">
+    <div id="summary-toggle-left">
+      <div id="summary-toggle-label">
+        <span class="stag">📋 案件サマリー</span>
+        公共交通利用促進キャンペーン｜プランB（MapPenguin連携版）
+      </div>
+      <span class="summary-hint">▼ クリックして開く</span>
+    </div>
+    <span id="summary-toggle-arrow">▼ 開く</span>
+  </button>
+  <div id="summary-body">
+
+<div class="section">
+  <div class="section-title">プランBの概要</div>
+  <h3>プランAとの主な違い</h3>
+  <table>
+    <tr><th>項目</th><th>プランA（従来案）</th><th>プランB（MapPenguin連携）</th></tr>
+    <tr><td>GPS判定方式</td><td>乗車地＋降車地 ペア成立で1pt</td><td><strong>乗車地のみ 1回=1pt（シンプル）</strong></td></tr>
+    <tr><td>バス停の探し方</td><td>会社選択→路線選択→停留所選択</td><td><strong>地図タップ or 近くのリストから選択</strong></td></tr>
+    <tr><td>MapPenguin</td><td>なし</td><td><strong>バス停＋観光スポット地図（CSV登録）</strong></td></tr>
+    <tr><td>GTFS連携</td><td>あり（要確認）</td><td><strong>なし（CSVインポートで代替）</strong></td></tr>
+    <tr><td>会社・路線選択UI</td><td>あり</td><td><strong>なし（地図でバス停直接選択）</strong></td></tr>
+    <tr><td>キャンペーン構成</td><td>単一</td><td><strong>2キャンペーン（観光10-11月/日常1-2月）</strong></td></tr>
+  </table>
+
+  <h3>クライアントQ&Aへの回答（プランBベース）</h3>
+  <table>
+    <tr><th>質問</th><th>回答</th></tr>
+    <tr><td>①フロー簡略化（「乗る」のみ・バス会社選定不要）</td><td>✅ プランBはマップからバス停タップ→「ここに乗る」で完結。降車地・会社選択なし</td></tr>
+    <tr><td>②MapPenguin導入・6,000スポット一括登録</td><td>✅ CSVインポートで一括登録可。EnterpriseプランでOK。GTFSなしでも運用可</td></tr>
+    <tr><td>③2キャンペーン構成・ポイント引き継ぎ</td><td>✅ マイレージOP機能で対応。10-11月→1-2月でポイント累積継続</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">プロダクト構成（プランB確定版）</div>
+  <div class="product-block">
+    <div class="product-name">SmartStampCard（スタンダード）</div>
+    <div class="product-item">GPS 1点チェックイン → 乗車地のみで1pt（ペア不要）</div>
+    <div class="product-item">マイレージOP → ポイント累積・2キャンペーン対応</div>
+    <div class="product-item">LINEログインOP → ブラウザ参加・認証基盤</div>
+  </div>
+  <div class="product-block reci">
+    <div class="product-name">SmartRecieco（WEB版 マイレージ＋LINEログインOP）</div>
+    <div class="product-item">タクシー領収書OCR審査</div>
+    <div class="product-item">事務局日次審査 → 承認でCardにポイント反映</div>
+  </div>
+  <div class="product-block map">
+    <div class="product-name">MapPenguin（Enterpriseプラン）</div>
+    <div class="product-item">バス停 約6,000件 CSV一括登録</div>
+    <div class="product-item">観光スポット情報（写真・音声ガイド・多言語）</div>
+    <div class="product-item">iframeでStampCard内に埋め込み</div>
+    <div class="product-item">月額¥72,000～・初期¥100,000</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">拡張開発項目 <span>SE算定対象</span></div>
+  <table>
+    <tr>
+      <th style="width:8%;">ID</th>
+      <th style="width:10%;">区分</th>
+      <th style="width:25%;">機能</th>
+      <th>概要</th>
+      <th style="width:10%;text-align:center;">難易度</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-01</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>マイページ：「地図から探す」「近くのリスト」2ボタン追加</td>
+      <td>乗車入口を2ルートに分岐。タクシーボタンも継続</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-02</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>MapPenguin地図統合フロー（バス停タップ→「ここに乗る」→GPS確認）</td>
+      <td>MapPenguin iframeからバス停選択→ボトムシート表示→GPS確認→1pt付与</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">B-01</span></td>
+      <td><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>バス停DB・GPS判定（シンプル版）</td>
+      <td>StopDB・乗車1回=1pt・インターバル制限・CSVインポート（GTFSなし）</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">B-02</span></td>
+      <td><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>Receico→Cardポイント連携</td>
+      <td>承認Webhook → Card 1pt付与。Webhook未対応時は日次バッチ</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-03<br>B-03</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span><br><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">バック</span></td>
+      <td>Card→Receico SSO連携</td>
+      <td>LINEトークン引き継ぎ。チャネル共通→トークン渡し、別→ワンタイム方式</td>
+      <td style="text-align:center;"><span class="badge badge-mid">中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-04</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>審査ステータス表示</td>
+      <td>「審査中（オレンジ）」「承認済（グリーン）」バッジをポイント履歴に表示</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-cust">F-05</span></td>
+      <td><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">フロント</span></td>
+      <td>応募モーダル：ポイント内訳表示</td>
+      <td>GPS乗車分・タクシー承認済・審査中の内訳を応募モーダルに表示</td>
+      <td style="text-align:center;"><span class="badge badge-sm">小</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-ops">B-04</span></td>
+      <td><span style="background:#d1fae5;color:#065f46;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">設定作業</span></td>
+      <td>OCRタグ審査条件設定</td>
+      <td>Receico管理画面でタクシー会社リスト・期間・重複チェックを設定</td>
+      <td style="text-align:center;"><span class="badge badge-cfg">設定のみ</span></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-map">MAP</span></td>
+      <td><span style="background:#e8f5e9;color:#1b5e20;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;">設定作業</span></td>
+      <td>MapPenguin バス停CSV一括登録（約6,000件）</td>
+      <td>MapPenguin管理画面でCSV一括インポート。観光スポット情報も登録</td>
+      <td style="text-align:center;"><span class="badge badge-cfg">設定のみ</span></td>
+    </tr>
+  </table>
+
+  <h3 style="margin-top:20px;">WWS社内確認が必要な事項</h3>
+  <div class="check-item"><div class="check-num">1</div><div class="check-text">MapPenguin iframeとStampCardブラウザ間のpostMessage通信が可能か <span class="check-tag">F-02の実装方式に影響</span></div></div>
+  <div class="check-item"><div class="check-num">2</div><div class="check-text">ReceicoにWebhookが存在するか <span class="check-tag">B-02の実装方式の分岐点</span></div></div>
+  <div class="check-item"><div class="check-num">3</div><div class="check-text">両プロダクトのLINEチャネルが共通か <span class="check-tag">B-03の実装方式の分岐点</span></div></div>
+  <div class="check-item"><div class="check-num">4</div><div class="check-text">MapPenguin EnterpriseプランのCSVインポート上限（6,000件以上OK?）</div></div>
+</div>
+
+<div class="section" style="display:none;">
+  <div class="section-title">成果物一覧</div>
+  <p class="note">※ 本資料はコンペ提案段階のものです。</p>
+</div>
+  </div>
+</div>
+
+<!-- ② フロー図（プランB・3ルート） -->
+<div id="flowbar">
+  <div class="ftitle">ユーザーフロー図（プランB）</div>
+  <div style="overflow-x:auto;">
+  <div style="display:flex;align-items:flex-start;gap:0;min-width:1100px;">
+
+    <!-- LINE -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;margin-top:22px;">
+      <div style="background:#16a34a;color:#fff;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:72px;"><span style="font-size:8px;opacity:0.8;">①</span><br>LINEログイン</div>
+      <span class="id-std" style="display:inline-block;margin-top:3px;font-size:8px;padding:1px 5px;">標準(OP)</span>
+    </div>
+    <div style="color:#bbb;font-size:20px;padding:0 4px;margin-top:32px;">›</div>
+
+    <!-- マイページ -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;margin-top:22px;">
+      <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:72px;"><span style="font-size:8px;opacity:0.8;">②</span><br>マイページ</div>
+      <span class="id-cust" style="display:inline-block;margin-top:3px;font-size:8px;padding:1px 5px;">F-01</span>
+    </div>
+
+    <!-- 分岐矢印 -->
+    <div style="display:flex;flex-direction:column;align-items:center;padding:0 5px;flex-shrink:0;gap:0;margin-top:14px;">
+      <div style="font-size:9px;color:#1b5e20;font-weight:700;">地図 ↗</div>
+      <div style="color:#1b5e20;font-size:16px;line-height:1.1;">↑</div>
+      <div style="color:#555;font-size:16px;line-height:1.1;">─</div>
+      <div style="color:#1d4ed8;font-size:16px;line-height:1.1;">↓</div>
+      <div style="font-size:9px;color:#1d4ed8;font-weight:700;">TAX ↘</div>
+    </div>
+
+    <!-- 3ルート縦並び -->
+    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+
+      <!-- マップルート -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="font-size:8px;color:#1b5e20;font-weight:700;writing-mode:vertical-rl;margin-right:3px;opacity:0.7;">マップ</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="background:#e8f5e9;border:1.5px solid #1b5e20;color:#1b5e20;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">MapPenguin<br>地図から探す</div>
+          <span class="id-map" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">F-02</span>
+        </div>
+        <div style="color:#bbb;font-size:20px;padding:0 3px;margin-bottom:16px;">›</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">バス停タップ<br>「ここに乗る」</div>
+          <span class="id-cust" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">F-02</span>
+        </div>
+      </div>
+
+      <!-- リストルート -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="font-size:8px;color:#555;font-weight:700;writing-mode:vertical-rl;margin-right:3px;opacity:0.7;">リスト</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">近くの<br>リストから</div>
+          <span class="id-cust" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">F-02</span>
+        </div>
+      </div>
+
+      <!-- タクシールート -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="font-size:8px;color:#1d4ed8;font-weight:700;writing-mode:vertical-rl;margin-right:3px;opacity:0.7;">タクシー</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="background:#1d4ed8;color:#fff;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">レシート<br>登録</div>
+          <span class="id-reci" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">Receico</span>
+        </div>
+        <div style="color:#bbb;font-size:20px;padding:0 3px;margin-bottom:16px;">›</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="background:#92400e;color:#fff;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">事務局審査<br>（日次）</div>
+          <span class="id-ops" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">B-04設定</span>
+        </div>
+        <div style="color:#bbb;font-size:20px;padding:0 3px;margin-bottom:16px;">›</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:70px;">承認→<br>Card 1pt</div>
+          <div style="font-size:8px;color:#e53935;font-weight:700;">B-02</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GPS確認 -->
+    <div style="margin-top:13px;display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;">
+      <div style="color:#bbb;font-size:14px;margin-bottom:2px;">↓ 合流</div>
+      <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:72px;">GPS確認<br>乗車 1pt</div>
+      <span class="id-cust" style="display:inline-block;margin-top:2px;font-size:8px;padding:1px 5px;">B-01</span>
+    </div>
+
+    <div style="color:#aaa;font-size:9px;padding:0 4px;margin-top:30px;">SSO<br>F/B-03</div>
+    <div style="color:#bbb;font-size:20px;padding:0 3px;margin-top:32px;">›</div>
+
+    <!-- ポイント統合 -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;margin-top:22px;">
+      <div style="border:1.5px solid #e53935;background:#fff5f5;color:#333;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:72px;"><span style="font-size:8px;opacity:0.8;">⑦</span><br>ポイント統合<br>マイページ</div>
+      <span class="id-cust" style="display:inline-block;margin-top:3px;font-size:8px;padding:1px 5px;">F-04/F-05</span>
+    </div>
+    <div style="color:#bbb;font-size:20px;padding:0 3px;margin-top:32px;">›</div>
+
+    <!-- 賞品応募 -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;margin-top:22px;">
+      <div style="background:#16a34a;color:#fff;border-radius:5px;padding:8px 10px;font-size:10px;font-weight:700;text-align:center;line-height:1.4;min-width:72px;"><span style="font-size:8px;opacity:0.8;">⑧</span><br>賞品応募<br>モーダル</div>
+      <span class="id-std" style="display:inline-block;margin-top:3px;font-size:8px;padding:1px 5px;">標準</span>
+    </div>
+
+    <!-- 凡例 -->
+    <div style="margin-left:16px;padding-left:14px;border-left:1px solid #e0e0e0;display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:18px;">
+      <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#555;"><div style="width:14px;height:9px;background:#16a34a;border-radius:2px;flex-shrink:0;"></div>標準機能</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#555;"><div style="width:14px;height:9px;background:#fff5f5;border:1px solid #e53935;border-radius:2px;flex-shrink:0;"></div>拡張開発</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#555;"><div style="width:14px;height:9px;background:#e8f5e9;border:1px solid #1b5e20;border-radius:2px;flex-shrink:0;"></div>MapPenguin</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#555;"><div style="width:14px;height:9px;background:#1d4ed8;border-radius:2px;flex-shrink:0;"></div>Receico</div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ③ メインテーブル -->
+<table id="panels-table">
+<tbody><tr>
+
+<!-- 左：画面フロー -->
+<td id="td-left">
+<div id="td-left-inner">
+<div class="grid">
+
+<!-- ══════ 1. LINEログイン ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div class="line-body">
+    <div class="sp8"></div>
+    <div class="line-logo-w">W</div>
+    <div class="line-camp-name">のりもの応援キャンペーン</div>
+    <div style="font-size:9px;color:#1b5e20;font-weight:700;text-align:center;">プランB（MapPenguin連携版）</div>
+    <div class="line-note">
+      ご登録いただいた個人情報は、当選案内および賞品発送のために使用します。個人情報は厳重に管理し、第三者への開示はございません。
+    </div>
+    <button class="btn-line"><span style="font-size:18px;">💬</span>LINEでログイン</button>
+    <div style="font-size:9px;color:#aaa;text-align:center;">アプリのインストール不要・ブラウザで参加</div>
+  </div>
+</div></div>
+<div class="screen-label">① LINEログイン</div>
+<div class="screen-sub">標準UI（LINEログイン オプション）</div>
+<div class="screen-ids"><span class="id-std">標準(OP)</span></div>
+</div>
+
+<!-- ══════ 2. マイページTOP（F-01） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div class="user-line">ようこそ 山田 さん。</div>
+  <div class="pt-area">
+    <div><span class="pt-num">6</span><span class="pt-unit">ポイント</span></div>
+    <a class="pt-link">応募できる賞品があります</a>
+    <div class="pt-expiry">有効期限：2026/01/31 23:59</div>
+  </div>
+  <div class="stamp-area">
+    <div class="stamp-grid">
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">1</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">2</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">3</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">4</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">5</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">6</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">7</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">8</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">9</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">10</div></div>
+    </div>
+    <div class="stamp-page">1 / 2</div>
+  </div>
+  <div style="font-size:9px;color:#888;padding:4px 14px;background:#eaf6f2;border-bottom:1px solid #d8ede8;">バスに乗るたびスタンプ1枚！</div>
+  <div class="sp8"></div>
+
+  <!-- ★F-01カスタム：乗車2ボタン -->
+  <div style="margin:0 14px;" class="custom-mark">
+    <div style="font-size:10px;font-weight:700;color:#c8373a;text-align:center;padding:4px 0 2px;">🚃 乗車スタンプを押す</div>
+    <div style="display:flex;gap:6px;padding:0 0 8px;">
+      <button style="flex:1;background:#e8f5e9;border:1.5px solid #1b5e20;border-radius:6px;padding:8px 4px;font-size:10px;font-weight:700;color:#1b5e20;font-family:inherit;">🗺️<br><span style="font-size:9px;">地図から探す</span></button>
+      <button style="flex:1;background:#f5f5f5;border:1.5px solid #ccc;border-radius:6px;padding:8px 4px;font-size:10px;font-weight:700;color:#555;font-family:inherit;">📍<br><span style="font-size:9px;">近くのリスト</span></button>
+    </div>
+  </div>
+  <!-- ★カスタム：タクシーボタン -->
+  <div style="margin:6px 14px 0;" class="custom-mark">
+    <button class="btn-outline" style="width:100%;margin:0;">🧾 タクシーレシートを登録する</button>
+  </div>
+
+  <div class="sp8"></div>
+  <div class="prize-section">
+    <div class="prize-card">
+      <div class="prize-img-area">☕</div>
+      <div class="prize-pt-bar">5ポイント</div>
+      <div class="prize-info">
+        <div class="prize-name">地元カフェ券 500円分</div>
+        <div class="prize-desc">地域のカフェで使えるギフト券</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-red" style="margin-top:4px;">応募してポイントを貯める</button>
+  <div class="sp8"></div>
+</div></div>
+<div class="screen-label">② マイページ TOP</div>
+<div class="screen-sub">地図・リスト2入口ボタン追加（拡張開発）</div>
+<div class="screen-ids"><span class="id-cust">F-01</span></div>
+</div>
+
+<!-- ══════ 3. MapPenguin 地図画面（F-02） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb" style="background:#1b5e20;color:#fff;"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <!-- 地図エリア -->
+  <div class="map-bg" style="flex:1;position:relative;overflow:hidden;">
+    <!-- 検索バー -->
+    <div class="map-search-bar">🔍 <span>バス停・観光スポットを検索</span></div>
+    <!-- チップ -->
+    <div class="map-chip-row" style="top:38px;">
+      <div class="map-chip active">🚌 バス停</div>
+      <div class="map-chip">🏛 観光スポット</div>
+      <div class="map-chip">📍 現在地周辺</div>
+    </div>
+    <!-- 道路 -->
+    <div class="map-road-h" style="top:45%;"></div>
+    <div class="map-road-h" style="top:68%;"></div>
+    <div class="map-road-v" style="left:38%;"></div>
+    <div class="map-road-v" style="left:62%;"></div>
+    <!-- 公園エリア -->
+    <div style="position:absolute;top:15%;right:8%;width:28%;height:22%;background:#c8e6c9;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#2e7d32;font-weight:700;border:1px solid #a5d6a7;">後楽園</div>
+    <!-- バス停ピン -->
+    <div class="map-pin bus" style="top:42%;left:35%;">B</div>
+    <div class="map-pin bus" style="top:42%;left:59%;">B</div>
+    <div class="map-pin bus" style="top:65%;left:48%;">B</div>
+    <div class="map-pin bus" style="top:28%;left:52%;">B</div>
+    <!-- 観光スポットピン -->
+    <div class="map-pin spot" style="top:20%;right:10%;">★</div>
+    <div class="map-pin spot" style="top:55%;left:22%;">★</div>
+    <!-- 現在地 -->
+    <div class="map-pin me" style="top:43%;left:48%;">●</div>
+    <!-- 凡例 -->
+    <div class="map-legend">
+      <div>🟢 バス停</div>
+      <div>🔵 観光スポット</div>
+      <div>🟠 現在地</div>
+    </div>
+    <!-- 現在地ボタン -->
+    <div class="map-my-loc">📍</div>
+    <!-- 下部バー -->
+    <div class="map-bottom-bar" style="position:absolute;bottom:0;left:0;right:0;">
+      近くのバス停 4件 ／ 観光スポット 2件
+    </div>
+  </div>
+</div></div>
+<div class="screen-label">③ MapPenguin 地図画面</div>
+<div class="screen-sub">バス停タップで詳細ボトムシートへ</div>
+<div class="screen-ids"><span class="id-map">MAP</span><span class="id-cust">F-02</span></div>
+</div>
+
+<!-- ══════ 4. 近くのリスト（F-02） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#1b5e20;color:#fff;padding:8px 14px;font-size:11px;font-weight:700;">
+    📍 近くのバス停
+    <span style="font-size:9px;opacity:0.8;margin-left:4px;">現在地から近い順</span>
+  </div>
+  <!-- リスト -->
+  <div style="flex:1;overflow-y:auto;">
+    <div class="stop-list-item">
+      <div class="stop-dot"></div>
+      <div>
+        <div class="stop-name">岡山駅前 バス停</div>
+        <div class="stop-dist">📍 現在地から 42m</div>
+      </div>
+      <div class="stop-arrow">›</div>
+    </div>
+    <div class="stop-list-item">
+      <div class="stop-dot"></div>
+      <div>
+        <div class="stop-name">城下 バス停</div>
+        <div class="stop-dist">📍 現在地から 180m</div>
+      </div>
+      <div class="stop-arrow">›</div>
+    </div>
+    <div class="stop-list-item">
+      <div class="stop-dot"></div>
+      <div>
+        <div class="stop-name">天満屋 バス停</div>
+        <div class="stop-dist">📍 現在地から 320m</div>
+      </div>
+      <div class="stop-arrow">›</div>
+    </div>
+    <div class="stop-list-item">
+      <div class="stop-dot"></div>
+      <div>
+        <div class="stop-name">西大寺バスセンター</div>
+        <div class="stop-dist">📍 現在地から 480m</div>
+      </div>
+      <div class="stop-arrow">›</div>
+    </div>
+    <div style="padding:8px 14px;font-size:9px;color:#aaa;text-align:center;">※ キャンペーン参加バス停のみ表示</div>
+  </div>
+  <div style="background:#f5f5f5;padding:6px 14px;border-top:1px solid #e0e0e0;">
+    <button class="btn-map-primary" style="width:100%;margin:0;">🗺️ 地図で表示</button>
+  </div>
+</div></div>
+<div class="screen-label">④ 近くのリスト</div>
+<div class="screen-sub">近い順にバス停一覧（拡張開発）</div>
+<div class="screen-ids"><span class="id-cust">F-02</span></div>
+</div>
+
+<!-- ══════ 5. バス停詳細ボトムシート（F-02）「ここに乗る」 ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb" style="background:#1b5e20;color:#fff;"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <!-- 地図（暗め） -->
+  <div style="flex:1;background:#c5ddb5;position:relative;display:flex;flex-direction:column;justify-content:flex-end;">
+    <!-- 薄い地図背景 -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:#d4e8c0;opacity:0.6;"></div>
+    <div style="position:absolute;top:40%;left:0;right:0;height:5px;background:#fff;opacity:0.5;"></div>
+    <div style="position:absolute;top:0;bottom:0;left:45%;width:5px;background:#fff;opacity:0.5;"></div>
+    <!-- 選択されたピン（大） -->
+    <div style="position:absolute;top:32%;left:42%;font-size:24px;">📍</div>
+    <div style="position:absolute;top:22%;left:35%;background:#1b5e20;color:#fff;font-size:8px;padding:2px 5px;border-radius:3px;font-weight:700;">岡山駅前</div>
+    <!-- オーバーレイ -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);"></div>
+    <!-- ボトムシート -->
+    <div class="bottom-sheet" style="position:relative;z-index:10;">
+      <div class="bs-handle"></div>
+      <div class="bs-title">🚌 岡山駅前 バス停</div>
+      <div class="bs-sub">キャンペーン参加停留所 ／ 現在地から 42m</div>
+      <div class="bs-row"><div class="bs-dot" style="background:#4caf50;"></div>スタンプ参加中（キャンペーン期間内）</div>
+      <div class="bs-row"><div class="bs-dot" style="background:#888;"></div>獲得済：3回（本日0回）</div>
+      <div style="border-top:1px solid #f0f0f0;margin-top:6px;padding-top:6px;">
+        <button class="btn-board-here">🚌 ここに乗る（GPS確認）</button>
+        <button style="background:transparent;border:none;width:100%;padding:7px;font-size:10px;color:#888;font-family:inherit;cursor:pointer;">キャンセル</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+<div class="screen-label">⑤ バス停詳細「ここに乗る」</div>
+<div class="screen-sub">ボトムシート → GPS確認へ（拡張開発）</div>
+<div class="screen-ids"><span class="id-cust">F-02</span></div>
+</div>
+
+<!-- ══════ 6. GPS確認 → 1pt完了（B-01） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#1b5e20;color:#fff;padding:8px 14px;font-size:11px;font-weight:700;">GPS 位置確認</div>
+  <div class="gps-confirm-card">
+    <div class="gps-loc-name">🚌 岡山駅前 バス停</div>
+    <div class="gps-dist">現在地から 38m ✅ 範囲内</div>
+    <div class="gps-pt-badge">＋1pt 付与対象</div>
+  </div>
+  <div style="margin:0 14px 8px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:8px 10px;font-size:10px;">
+    <div style="display:flex;gap:6px;align-items:center;padding:3px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#4caf50;"></div><span>乗車地のGPS確認：OK</span></div>
+    <div style="display:flex;gap:6px;align-items:center;padding:3px 0;font-size:9px;color:#888;"><div style="width:8px;height:8px;border-radius:50%;background:#e0e0e0;"></div>インターバルチェック：OK</div>
+  </div>
+  <div class="pt-complete-area">
+    <div class="pt-complete-icon">🎉</div>
+    <div class="pt-complete-num">＋1pt 獲得！</div>
+    <div class="pt-complete-sub">累計 7ポイント</div>
+    <div style="font-size:9px;color:#aaa;margin-top:8px;">あと3ptで賞品に応募できます</div>
+  </div>
+  <button class="btn-green-full" style="margin-bottom:8px;">マイページへ戻る</button>
+</div></div>
+<div class="screen-label">⑥ GPS確認 → 1pt完了</div>
+<div class="screen-sub">乗車地のみで1pt付与（ペア判定なし）</div>
+<div class="screen-ids"><span class="id-cust">B-01</span></div>
+</div>
+
+<!-- ══════ 7. タクシーレシート登録（Receico） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#1d4ed8;color:#fff;padding:8px 14px;font-size:11px;font-weight:700;">🧾 タクシーレシート登録</div>
+  <div class="reci-body">
+    <div class="reci-note">タクシー乗車後の領収書を撮影してアップロードしてください。審査完了後（2〜3営業日）にポイントが付与されます。</div>
+    <div class="upload-zone">
+      <div class="upload-icon">📷</div>
+      <div class="upload-text">レシートを撮影する</div>
+      <div class="upload-sub">JPG / PNG・5MB以内</div>
+      <button class="btn-camera">📷 写真を選択</button>
+    </div>
+    <div class="notice-yellow">
+      ⚠️ 領収書の金額・日時・タクシー会社名が読み取れるように撮影してください。<br>
+      ⚠️ 1枚のレシートにつき1回のみ申請可能です。
+    </div>
+  </div>
+</div></div>
+<div class="screen-label">⑦ タクシーレシート登録</div>
+<div class="screen-sub">SmartRecieco（標準機能）</div>
+<div class="screen-ids"><span class="id-reci">Receico</span></div>
+</div>
+
+<!-- ══════ 8. アップロード完了 ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#1d4ed8;color:#fff;padding:8px 14px;font-size:11px;font-weight:700;">🧾 アップロード完了</div>
+  <div class="reci-body">
+    <div class="result-table">
+      <div class="result-hd">✅ 受付完了</div>
+      <div class="result-row"><span class="r-k">状態</span><span class="r-v ok">審査中</span></div>
+      <div class="result-row"><span class="r-k">送信日時</span><span class="r-v">2026/01/15 14:23</span></div>
+    </div>
+    <div class="notice-yellow">
+      📋 審査完了まで2〜3営業日かかります。承認されるとスタンプカードにポイントが反映されます。
+    </div>
+    <div style="background:#fff3e0;border-left:3px solid #e87722;padding:7px 9px;font-size:9px;color:#795548;border-radius:0 5px 5px 0;">
+      ⚠️ OCR自動判定後、事務局が日次でご確認します。
+    </div>
+  </div>
+  <button class="btn-green-full" style="margin-bottom:8px;">マイページへ戻る</button>
+</div></div>
+<div class="screen-label">⑧ アップロード完了</div>
+<div class="screen-sub">審査中ステータス表示</div>
+<div class="screen-ids"><span class="id-reci">Receico</span></div>
+</div>
+
+<!-- ══════ 9. ポイント履歴（F-04） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#eaf6f2;padding:8px 14px;border-bottom:1px solid #d8ede8;">
+    <div style="font-size:11px;font-weight:700;color:#333;">ポイント履歴</div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <div><span style="font-size:20px;font-weight:700;color:#1b5e20;">7</span><span style="font-size:11px;color:#555;">pt 累計</span></div>
+      <div style="margin-left:8px;"><span style="font-size:20px;font-weight:700;color:#e87722;">1</span><span style="font-size:11px;color:#555;">pt 審査中</span></div>
+    </div>
+  </div>
+  <!-- 履歴リスト -->
+  <div style="flex:1;overflow-y:auto;" class="custom-mark">
+    <div class="hist-item">
+      <div class="hist-icon">🚌</div>
+      <div>
+        <div class="hist-name">岡山駅前 バス乗車</div>
+        <div class="hist-date">2026/01/15 14:35</div>
+      </div>
+      <div><span class="badge-approved">承認済</span><div class="hist-pt">+1pt</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-icon">🧾</div>
+      <div>
+        <div class="hist-name">タクシー領収書</div>
+        <div class="hist-date">2026/01/15 14:23</div>
+      </div>
+      <div><span class="badge-pending">審査中</span><div class="hist-pt" style="color:#e87722;">+1pt予定</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-icon">🚌</div>
+      <div>
+        <div class="hist-name">城下 バス乗車</div>
+        <div class="hist-date">2026/01/14 09:12</div>
+      </div>
+      <div><span class="badge-approved">承認済</span><div class="hist-pt">+1pt</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-icon">🚌</div>
+      <div>
+        <div class="hist-name">天満屋 バス乗車</div>
+        <div class="hist-date">2026/01/13 17:44</div>
+      </div>
+      <div><span class="badge-approved">承認済</span><div class="hist-pt">+1pt</div></div>
+    </div>
+  </div>
+</div></div>
+<div class="screen-label">⑨ ポイント履歴</div>
+<div class="screen-sub">審査中バッジ表示（拡張開発）</div>
+<div class="screen-ids"><span class="id-cust">F-04</span></div>
+</div>
+
+<!-- ══════ 10. 応募モーダル（F-05） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div class="modal-overlay-bg">
+    <div class="modal-box" class="custom-mark">
+      <div style="border:1.5px solid #e53935;border-radius:6px;padding:8px;margin-bottom:8px;background:#fff5f5;">
+        <div style="font-size:9px;color:#991b1b;font-weight:700;margin-bottom:4px;">✏️ 拡張開発：ポイント内訳表示</div>
+        <div style="display:flex;gap:6px;font-size:9px;">
+          <span style="background:#dcfce7;color:#166534;padding:1px 5px;border-radius:3px;">GPS 5pt</span>
+          <span style="background:#dcfce7;color:#166534;padding:1px 5px;border-radius:3px;">タクシー承認 1pt</span>
+          <span style="background:#fef3c7;color:#92400e;padding:1px 5px;border-radius:3px;">審査中 1pt</span>
+        </div>
+      </div>
+      <div class="modal-title">賞品に応募する</div>
+      <div class="modal-sub">現在 7ポイント（+1pt審査中）</div>
+      <div class="modal-item">
+        <div class="modal-thumb">☕</div>
+        <div>
+          <span class="modal-pt-badge">5pt</span>
+          <div class="modal-item-name">地元カフェ券 500円分</div>
+          <div class="modal-item-desc">地域カフェで使えるギフト券</div>
+        </div>
+      </div>
+      <div class="modal-item">
+        <div class="modal-thumb">🛍</div>
+        <div>
+          <span class="modal-pt-badge">10pt</span>
+          <div class="modal-item-name">岡山県産フルーツセット</div>
+          <div class="modal-item-desc">旬の桃・マスカット詰め合わせ</div>
+        </div>
+      </div>
+      <button class="btn-red" style="margin:0;">応募する</button>
+    </div>
+  </div>
+</div></div>
+<div class="screen-label">⑩ 応募モーダル</div>
+<div class="screen-sub">ポイント内訳（GPS/タクシー/審査中）表示</div>
+<div class="screen-ids"><span class="id-cust">F-05</span></div>
+</div>
+
+<!-- ══════ 11. 応募フォーム（標準） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div style="background:#16a34a;color:#fff;padding:8px 14px;font-size:11px;font-weight:700;">🎁 応募フォーム</div>
+  <div class="form-section">
+    <div style="font-size:10px;font-weight:700;color:#333;margin-bottom:4px;">地元カフェ券 500円分（5pt）</div>
+    <div class="form-group">
+      <label>お名前（必須）</label>
+      <input type="text" placeholder="山田 太郎">
+    </div>
+    <div class="form-group">
+      <label>郵便番号（必須）</label>
+      <input type="text" placeholder="700-0000">
+    </div>
+    <div class="form-group">
+      <label>ご住所（必須）</label>
+      <input type="text" placeholder="岡山県岡山市…">
+    </div>
+    <div class="form-group">
+      <label>電話番号（必須）</label>
+      <input type="text" placeholder="080-0000-0000">
+    </div>
+    <button class="form-submit">応募する（5pt消費）</button>
+    <div style="font-size:9px;color:#aaa;text-align:center;margin-top:4px;">個人情報は賞品発送のみに使用します</div>
+  </div>
+</div></div>
+<div class="screen-label">⑪ 応募フォーム</div>
+<div class="screen-sub">標準UI</div>
+<div class="screen-ids"><span class="id-std">標準</span></div>
+</div>
+
+<!-- ══════ 12. 2キャンペーン切替（観光/日常） ══════ -->
+<div class="screen-wrap">
+<div class="phone"><div class="phone-inner">
+  <div class="sb"><span>9:41</span><span>▲ ◀ 🔋</span></div>
+  <div class="user-line">ようこそ 山田 さん。</div>
+  <div class="pt-area">
+    <div><span class="pt-num">7</span><span class="pt-unit">ポイント</span></div>
+    <div style="font-size:9px;color:#888;margin-top:2px;">観光キャンペーン（10-11月）→ 日常キャンペーン（1-2月）に引き継ぎ済</div>
+  </div>
+  <!-- 観光キャンペーンバナー -->
+  <div class="camp-banner tourism" style="margin:0 14px;border-radius:8px;margin-bottom:6px;margin-top:8px;">
+    <div class="camp-title">🏛 観光まわろうキャンペーン</div>
+    <div class="camp-period">2025年10月〜11月（終了）</div>
+    <span class="camp-pt-badge">5pt獲得済</span>
+  </div>
+  <div style="font-size:9px;color:#888;padding:2px 14px;display:flex;align-items:center;gap:4px;">
+    <span style="font-size:16px;">↓</span>
+    <span style="background:#fff3e0;color:#e65100;font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;border:1px solid #ffcc02;">ポイント引き継ぎ済</span>
+    マイレージ機能で累積継続
+  </div>
+  <!-- 日常キャンペーンバナー -->
+  <div class="camp-banner daily" style="margin:4px 14px;border-radius:8px;">
+    <div class="camp-title">🚌 のりもの応援キャンペーン</div>
+    <div class="camp-period">2026年1月〜2月（開催中）</div>
+    <span class="camp-pt-badge">2pt獲得中</span>
+  </div>
+  <div class="stamp-area">
+    <div class="stamp-grid">
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">1</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">2</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">3</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">4</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">5</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">6</div></div>
+      <div class="stamp got"><div class="s-bar"></div><div class="s-num">7</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">8</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">9</div></div>
+      <div class="stamp empty"><div class="s-bar"></div><div class="s-num">10</div></div>
+    </div>
+    <div class="stamp-page">合計 7pt（観光5pt + 日常2pt）</div>
+  </div>
+  <button class="btn-red" style="margin-top:6px;">賞品に応募する</button>
+  <div class="sp8"></div>
+</div></div>
+<div class="screen-label">⑫ 2キャンペーン（ポイント引き継ぎ）</div>
+<div class="screen-sub">観光(10-11月)→日常(1-2月)マイレージ継続</div>
+<div class="screen-ids"><span class="id-std">マイレージOP</span></div>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /td-left-inner -->
+</td><!-- /td-left -->
+
+<!-- 右：工数算定テーブル -->
+<td id="td-right">
+<div id="td-right-inner">
+
+<div style="font-size:14px;font-weight:700;color:#333;border-left:4px solid #1b5e20;padding-left:10px;margin-bottom:16px;">
+  拡張開発項目 ／ 工数算定依頼テーブル（プランB）
+</div>
+
+<table style="width:100%;border-collapse:collapse;font-size:11px;">
+<thead>
+<tr style="background:#1b5e20;color:#fff;">
+  <th style="padding:8px 10px;text-align:left;width:7%;">ID</th>
+  <th style="padding:8px 10px;text-align:left;width:9%;">区分</th>
+  <th style="padding:8px 10px;text-align:left;width:20%;">機能名</th>
+  <th style="padding:8px 10px;text-align:left;">概要・仕様</th>
+  <th style="padding:8px 10px;text-align:center;width:9%;">難易度</th>
+  <th style="padding:8px 10px;text-align:center;width:9%;">工数(h)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">F-01</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">フロント</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">マイページ乗車2入口ボタン</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">「地図から探す」「近くのリスト」2ボタンを追加しルート分岐。タクシーボタン継続。マイレージ残高・内訳表示も対応。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr style="background:#fafafa;">
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">F-02</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">フロント</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">MapPenguin地図統合フロー</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">①MapPenguin iframeをStampCard内に埋め込み ②バス停ピンタップでpostMessageでバス停IDを受け取り ③ボトムシート表示（停留所名・距離・乗車ボタン）④GPS位置確認 → 1pt付与。近くのリスト表示も含む。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">B-01</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">バック</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">バス停DB・GPS判定（シンプル版）</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">StopDB（停留所マスタ・緯度経度・CSVインポート対応）。乗車1回=1pt（ペア・降車不要）。インターバル制限（同一停留所 n分/回）。GTFSなし。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-mid">中</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr style="background:#fafafa;">
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">B-02</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">バック</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">Receico→Cardポイント連携</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">Receico承認時にCard側へポイント付与。Webhook対応あり→イベント連携。なし→日次バッチで差分取得。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-mid">中〜大</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">F-03<br>B-03</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;">
+    <span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">フロント</span><br>
+    <span style="background:#fce7f3;color:#9d174d;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">バック</span>
+  </td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">Card→Receico SSO連携</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">タクシーボタンタップ時にReceicoへシームレス遷移。LINEトークン引き継ぎ（共通チャネル）or ワンタイムトークン（別チャネル）。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-mid">中</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr style="background:#fafafa;">
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">F-04</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">フロント</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">審査ステータス表示</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">ポイント履歴に「審査中（オレンジ）」「承認済（グリーン）」バッジを表示。GPS分・タクシー審査中ptをマイページ上部に内訳表示。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-sm">小〜中</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-cust">F-05</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">フロント</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">応募モーダル：ポイント内訳</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">応募モーダル上部にGPS分・タクシー承認済・審査中ptの内訳チップを表示。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-sm">小</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">TBD</td>
+</tr>
+<tr style="background:#fafafa;">
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-ops">B-04</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#d1fae5;color:#065f46;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">設定作業</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">OCRタグ審査条件設定</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">Receico管理画面でタクシー会社リスト・対象期間・重複チェック条件を設定。コーディング不要。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-cfg">設定のみ</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">—</td>
+</tr>
+<tr>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span class="badge badge-map">MAP</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;"><span style="background:#e8f5e9;color:#1b5e20;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;">設定作業</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;font-weight:700;">MapPenguin バス停CSV登録</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;color:#555;line-height:1.6;">MapPenguin Enterprise管理画面でバス停約6,000件をCSV一括インポート。観光スポット情報（写真・説明・音声ガイド）も登録。</td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;"><span class="badge badge-cfg">設定のみ</span></td>
+  <td style="padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;color:#888;">—</td>
+</tr>
+</tbody>
+</table>
+
+<div style="margin-top:20px;padding:14px;background:#f1f8e9;border:1.5px solid #1b5e20;border-radius:8px;">
+  <div style="font-size:12px;font-weight:700;color:#1b5e20;margin-bottom:8px;">📋 費用概算（プランB・税別）</div>
+  <table style="width:100%;font-size:11px;">
+    <tr><th style="background:#1b5e20;color:#fff;padding:6px 10px;">項目</th><th style="background:#1b5e20;color:#fff;padding:6px 10px;">初期費用</th><th style="background:#1b5e20;color:#fff;padding:6px 10px;">月額</th></tr>
+    <tr><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">SmartStampCard スタンダード</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">¥250,000</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">¥30,000</td></tr>
+    <tr><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">LINEログインOP + マイレージOP</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">—</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">別途確認</td></tr>
+    <tr><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">SmartRecieco WEB版</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">別途確認</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">別途確認</td></tr>
+    <tr><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">MapPenguin Enterprise</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">¥100,000</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">¥72,000～</td></tr>
+    <tr><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;">拡張開発（F-01〜B-03）</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;">SE算定中</td><td style="padding:6px 10px;border-bottom:1px solid #e0e0e0;">—</td></tr>
+    <tr style="background:#e8f5e9;"><td style="padding:6px 10px;font-weight:700;color:#1b5e20;">合計（概算）</td><td style="padding:6px 10px;font-weight:700;color:#1b5e20;">¥350,000＋開発費</td><td style="padding:6px 10px;font-weight:700;color:#1b5e20;">¥102,000～</td></tr>
+  </table>
+  <div style="font-size:9px;color:#888;margin-top:6px;">※ プランA比較：MapPenguin月額が追加。GTFS・ペア判定が不要になる分、B-01開発規模はプランAより小さくなる想定。</div>
+</div>
+
+<div style="margin-top:16px;padding:14px;background:#fff8f0;border:1.5px solid #e87722;border-radius:8px;">
+  <div style="font-size:12px;font-weight:700;color:#7a4200;margin-bottom:8px;">⚡ WWS社内確認事項（見積前）</div>
+  <div style="font-size:11px;color:#555;line-height:2;">
+    1. MapPenguin iframe ↔ StampCard postMessage通信可否（F-02前提）<br>
+    2. Receico Webhook有無（B-02の実装方式分岐）<br>
+    3. LINEチャネル共通・別々（B-03の実装方式分岐）<br>
+    4. MapPenguin Enterprise CSV上限（6,000件以上OK?）<br>
+    5. マイレージOPの2キャンペーン対応（ポイント引き継ぎ仕様確認）
+  </div>
+</div>
+
+</div><!-- /td-right-inner -->
+</td><!-- /td-right -->
+
+</tr></tbody>
+</table>
+
+</body>
+</html>

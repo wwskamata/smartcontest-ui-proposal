@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "ueno-zoo-case",
+  "prompt": "MapPenguinの新しい導入事例をPR TIMESで発表したい。上野動物園が園内マップとして採用。来園者向けに動物の位置・説明・餌やり時間を多言語で案内。インバウンド対応が決め手。担当：鎌田、maps.smartpr.jp/pro/",
+  "assertions": [
+    { "id": "title_length", "text": "タイトルが40字以内である", "type": "programmatic" },
+    { "id": "lead_length", "text": "リード文が200字以内である", "type": "programmatic" },
+    { "id": "case_study_structure", "text": "導入前の課題・選定理由・導入効果の構成になっている", "type": "llm" },
+    { "id": "multilingual_mentioned", "text": "多言語対応・インバウンド関連の記述がある", "type": "llm" },
+    { "id": "checklist_present", "text": "PR TIMES入稿チェックリストが含まれている", "type": "llm" }
+  ]
+}

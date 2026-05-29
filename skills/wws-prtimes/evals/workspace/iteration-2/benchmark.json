@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "skill_name": "wws-prtimes",
+    "skill_path": "C:\\Users\\kamat\\wws-local-project\\skills\\wws-prtimes",
+    "timestamp": "2026-05-27T00:00:00Z",
+    "evals_run": [1, 2, 3],
+    "runs_per_configuration": 1
+  },
+
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "MapPenguin 工場キャンペーン",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 89.9,
+        "tokens": 31873,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": true, "evidence": "採用タイトル36字 ✅" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "187字 ✅" },
+        { "text": "背景・サービス概要・導入事例・特典・会社概要・問い合わせ先の各セクションが存在する", "passed": true, "evidence": "6セクションすべて存在" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": true, "evidence": "12項目チェックリスト付き" },
+        { "text": "AGC・ハルナプロデュース・大阪メトロの事例が記述されている", "passed": true, "evidence": "3社全て個別見出しで記述" },
+        { "text": "担当者名（政森/鎌田）とメールアドレスが記載されている", "passed": true, "evidence": "政森・鎌田とmasamori@ww-system.com記載" }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "MapPenguin 工場キャンペーン",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 91.4,
+        "tokens": 31397,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": false, "evidence": "採用タイトル約54字 ❌（エージェントが38字と誤申告）" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "196字 ✅" },
+        { "text": "背景・サービス概要・導入事例・特典・会社概要・問い合わせ先の各セクションが存在する", "passed": true, "evidence": "全セクション存在" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": true, "evidence": "チェックリスト付き" },
+        { "text": "AGC・ハルナプロデュース・大阪メトロの事例が記述されている", "passed": true, "evidence": "3社記述あり" },
+        { "text": "担当者名（政森/鎌田）とメールアドレスが記載されている", "passed": true, "evidence": "政森・鎌田とメールアドレス記載" }
+      ],
+      "notes": ["タイトル文字数を自己チェックする手順が未整備のため大幅超過"]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "SmartStampCard 公共交通",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 96.5,
+        "tokens": 31562,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": true, "evidence": "35字 ✅" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "178字 ✅" },
+        { "text": "GPS・乗降判定・スタンプの仕組みが説明されている", "passed": true, "evidence": "GPS乗降判定・2点チェックイン詳述" },
+        { "text": "LINEログイン・アプリDL不要の特長が記載されている", "passed": true, "evidence": "リード文・特長セクション双方で明記" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": true, "evidence": "13項目チェックリスト付き" }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "SmartStampCard 公共交通",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 86.8,
+        "tokens": 32298,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": false, "evidence": "51字 ❌" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "200字以内と判断（## リード文ヘッダー形式未使用）" },
+        { "text": "GPS・乗降判定・スタンプの仕組みが説明されている", "passed": true, "evidence": "GPS乗降判定の説明あり" },
+        { "text": "LINEログイン・アプリDL不要の特長が記載されている", "passed": true, "evidence": "LINEログインの特長記載あり" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": false, "evidence": "入稿チェックリストセクションなし ❌" }
+      ],
+      "notes": ["タイトル超過・チェックリスト欠如"]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "上野動物園 導入事例",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 89.8,
+        "tokens": 31470,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": true, "evidence": "32字 ✅" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "152字 ✅" },
+        { "text": "導入前の課題・選定理由・導入効果の構成になっている", "passed": true, "evidence": "3見出しすべて揃っている" },
+        { "text": "多言語対応・インバウンド関連の記述がある", "passed": true, "evidence": "複数箇所で多言語・インバウンド記述" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": true, "evidence": "14項目チェックリスト付き" }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "上野動物園 導入事例",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 86.4,
+        "tokens": 31660,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        { "text": "タイトルが40字以内である", "passed": false, "evidence": "51字 ❌" },
+        { "text": "リード文が200字以内である", "passed": true, "evidence": "200字以内と判断（**リード文**ボールド形式）" },
+        { "text": "導入前の課題・選定理由・導入効果の構成になっている", "passed": true, "evidence": "課題・選定理由・活用方法の構成あり" },
+        { "text": "多言語対応・インバウンド関連の記述がある", "passed": true, "evidence": "タイトルから本文全体で多言語対応を強調" },
+        { "text": "PR TIMES入稿チェックリストが含まれている", "passed": false, "evidence": "入稿チェックリストセクションなし ❌" }
+      ],
+      "notes": ["タイトル超過・チェックリスト欠如"]
+    }
+  ],
+
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": { "mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0 },
+      "time_seconds": { "mean": 92.07, "stddev": 3.84, "min": 89.8, "max": 96.5 },
+      "tokens": { "mean": 31635, "stddev": 211, "min": 31470, "max": 31873 }
+    },
+    "without_skill": {
+      "pass_rate": { "mean": 0.6778, "stddev": 0.1349, "min": 0.6, "max": 0.8333 },
+      "time_seconds": { "mean": 88.2, "stddev": 2.78, "min": 86.4, "max": 91.4 },
+      "tokens": { "mean": 31785, "stddev": 463, "min": 31397, "max": 32298 }
+    },
+    "delta": {
+      "pass_rate": "+0.3222",
+      "time_seconds": "+3.87",
+      "tokens": "-150"
+    }
+  },
+
+  "notes": [
+    "iteration-2 (with_skill) が全3評価で100%パスレートを達成。iteration-1 (without_skill) からの改善幅は+32ポイント",
+    "最大の改善ポイント：タイトル文字数チェック手順の明示化。iteration-1では3件すべてが40字超（51〜54字）だったのが、iteration-2では全件35字以下に収まった",
+    "チェックリスト未挿入の問題もiteration-2で完全解消。iteration-1ではeval-2, eval-3でチェックリスト欠如が発生していた",
+    "リード文フォーマット（## リード文 ヘッダー + （XX字）末尾）の義務化により、文字数の自己申告が統一された",
+    "実行時間はwith_skillが平均+3.9秒長い（スキルの指示読み込みコスト）がトークン使用量はほぼ同等"
+  ]
+}

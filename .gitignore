@@ -5,3 +5,20 @@ generated/
 extract_pdf*.py
 __pycache__/
 *.pyc
+
+# 暗号化・公開作業の一時ファイル
+.staticrypt.json
+_publish_*/
+assets/encrypted_*/
+encrypted/
+
+# 内部スクリプト・作業ファイル
+assets/_*.py
+assets/sk_*.txt
+assets/_sk*.txt
+generate_pitch_keep.txt
+pdf_extract.txt
+preview_slides.html
+
+# publish_log（パスワード含むため個人管理）
+publish_log.md

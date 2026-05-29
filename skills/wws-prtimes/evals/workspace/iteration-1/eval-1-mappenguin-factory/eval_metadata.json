@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "mappenguin-factory",
+  "prompt": "MapPenguin Proの工場向けキャンペーンのプレスリリースをPR TIMESに掲載したい。7月31日まで初期費用・月額6ヶ月・設定代行・イラスト制作の合計¥388,000相当が無料。AGC・ハルナプロデュース・大阪メトロの事例あり。担当は政森・鎌田、masamori@ww-system.com、maps.smartpr.jp/pro/",
+  "assertions": [
+    { "id": "title_length", "text": "タイトルが40字以内である", "type": "programmatic" },
+    { "id": "lead_length", "text": "リード文が200字以内である", "type": "programmatic" },
+    { "id": "sections_present", "text": "背景・サービス概要・導入事例・特典・会社概要・問い合わせ先の各セクションが存在する", "type": "llm" },
+    { "id": "checklist_present", "text": "PR TIMES入稿チェックリストが含まれている", "type": "llm" },
+    { "id": "case_studies_mentioned", "text": "AGC・ハルナプロデュース・大阪メトロの事例が記述されている", "type": "programmatic" },
+    { "id": "contact_info", "text": "担当者名（政森/鎌田）とメールアドレスが記載されている", "type": "programmatic" }
+  ]
+}

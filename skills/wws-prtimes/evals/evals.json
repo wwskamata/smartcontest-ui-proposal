@@ -1,0 +1,109 @@
+{
+  "skill_name": "wws-prtimes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "MapPenguin Proの工場向けキャンペーンのプレスリリースをPR TIMESに掲載したい。7月31日まで初期費用・月額6ヶ月・設定代行・イラスト制作の合計¥388,000相当が無料。AGC・ハルナプロデュース・大阪メトロの事例あり。担当は政森・鎌田、masamori@ww-system.com、maps.smartpr.jp/pro/",
+      "expected_output": "PR TIMES形式のMarkdown文書。タイトル40字以内、リード文200字以内、本文に背景・特長・事例・特典・チェックリストを含む",
+      "files": [],
+      "assertions": [
+        {
+          "id": "title_length",
+          "description": "タイトルが40字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "lead_length",
+          "description": "リード文が200字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "sections_present",
+          "description": "背景・サービス概要・導入事例・特典・会社概要・問い合わせ先の各セクションが存在する",
+          "type": "llm"
+        },
+        {
+          "id": "checklist_present",
+          "description": "PR TIMES入稿チェックリストが含まれている",
+          "type": "llm"
+        },
+        {
+          "id": "case_studies_mentioned",
+          "description": "AGC・ハルナプロデュース・大阪メトロの事例が記述されている",
+          "type": "programmatic"
+        },
+        {
+          "id": "contact_info",
+          "description": "担当者名（政森/鎌田）とメールアドレスが記載されている",
+          "type": "programmatic"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "SmartStampCardを使った公共交通利用促進キャンペーンのプレスリリースを書いて。バス・電車に乗るとGPSでスタンプが貯まり、賞品に応募できる仕組み。岡山県の行政案件を想定。開始時期は2026年10月。アプリDL不要・LINEログインで参加できる点が特長。",
+      "expected_output": "SmartStampCard×公共交通キャンペーンのPR TIMES形式文書。タイトル40字以内、リード200字以内、GPS乗降判定・LINEログイン・賞品応募等の特長を盛り込む",
+      "files": [],
+      "assertions": [
+        {
+          "id": "title_length",
+          "description": "タイトルが40字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "lead_length",
+          "description": "リード文が200字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "gps_feature_mentioned",
+          "description": "GPS・乗降判定・スタンプの仕組みが説明されている",
+          "type": "llm"
+        },
+        {
+          "id": "line_login_mentioned",
+          "description": "LINEログイン・アプリDL不要の特長が記載されている",
+          "type": "llm"
+        },
+        {
+          "id": "checklist_present",
+          "description": "PR TIMES入稿チェックリストが含まれている",
+          "type": "llm"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "MapPenguinの新しい導入事例をPR TIMESで発表したい。上野動物園が園内マップとして採用。来園者向けに動物の位置・説明・餌やり時間を多言語で案内。インバウンド対応が決め手。担当：鎌田、maps.smartpr.jp/pro/",
+      "expected_output": "導入事例発表型のPR TIMES文書。タイトル40字以内、リード200字以内、上野動物園の課題・選定理由・導入効果を含む",
+      "files": [],
+      "assertions": [
+        {
+          "id": "title_length",
+          "description": "タイトルが40字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "lead_length",
+          "description": "リード文が200字以内である",
+          "type": "programmatic"
+        },
+        {
+          "id": "case_study_structure",
+          "description": "導入前の課題・選定理由・導入効果の構成になっている",
+          "type": "llm"
+        },
+        {
+          "id": "multilingual_mentioned",
+          "description": "多言語対応・インバウンド関連の記述がある",
+          "type": "llm"
+        },
+        {
+          "id": "checklist_present",
+          "description": "PR TIMES入稿チェックリストが含まれている",
+          "type": "llm"
+        }
+      ]
+    }
+  ]
+}
